@@ -272,7 +272,13 @@
         }
 
         function updateReport() {
-            const report = `Info : Togelup\nPerihal : Pengecekan Bot Telegram\nStaff : ${currentStaff}\nTanggal : ${getIndoDate()}\n\nLink daftar : ${document.getElementById('in_daftar').value}\nLink alternatif : ${document.getElementById('in_alt').value}\nlivechat : ${document.getElementById('in_live').value}\nfacebook : ${document.getElementById('in_fb').value}\nwhatsapp : ${document.getElementById('in_wa').value}\nRTP : ${document.getElementById('in_rtp').value}\nPromo & Bonus : ${document.getElementById('in_promo').value}\nPrediksi : ${document.getElementById('in_prediksi').value}`;
+            const getVal = (id) => {
+                const value = document.getElementById(id).value;
+                return value ? `${value} ✅` : "";
+            };
+
+            const report = `Info : Togelup\nPerihal : Pengecekan Bot Telegram\nStaff : ${currentStaff}\nTanggal : ${getIndoDate()}\n\nLink daftar : ${getVal('in_daftar')}\nLink alternatif : ${getVal('in_alt')}\nlivechat : ${getVal('in_live')}\nfacebook : ${getVal('in_fb')}\nwhatsapp : ${getVal('in_wa')}\nRTP : ${getVal('in_rtp')}\nPromo & Bonus : ${getVal('in_promo')}\nPrediksi : ${getVal('in_prediksi')}\n\nket :\npengujian bot telegram aman tidak ada kendala.`;
+            
             document.getElementById('reportResult').innerText = report;
         }
 
