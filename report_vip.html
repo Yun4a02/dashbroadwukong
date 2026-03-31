@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REPORT DAILY QRIS </title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f0f0f; /* Abu-abu Gelap */
+            --card-bg: #1a1a1a;
+            --border-color: rgba(212, 175, 55, 0.2);
+            --neon-gold: #d4af37; /* Emas Metallic */
+            --gold-glow: rgba(212, 175, 55, 0.6);
+            --neon-red: #ff3c00;
+            --red-glow: rgba(255, 60, 0, 0.5);
+            --text-color: #e0fbfc;
+        }
+
+        /* --- ANTI-LAG & BOLD RESET --- */
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-weight: 900 !important; 
+            -webkit-font-smoothing: antialiased;
+            transform: translateZ(0); 
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 50% 50%, #1e1e1e 0%, #0f0f0f 100%);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background-color: var(--card-bg);
+            border: 2px solid var(--neon-gold);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- LETTER BY LETTER FLICKER ANIMATION --- */
+        @keyframes charFlicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: 1; text-shadow: 0 0 10px var(--gold-glow), 0 0 20px var(--neon-gold);
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                opacity: 0.4; text-shadow: none;
+            }
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--neon-gold);
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 26px;
+        }
+
+        h2 span {
+            display: inline-block;
+            animation: charFlicker 5s infinite;
+        }
+
+        /* Delay acak untuk efek kedap-kedip per huruf (REPORT DAILY QRIS) */
+        h2 span:nth-child(1) { animation-delay: 0.1s; }
+        h2 span:nth-child(3) { animation-delay: 0.5s; }
+        h2 span:nth-child(5) { animation-delay: 1.2s; }
+        h2 span:nth-child(7) { animation-delay: 0.8s; }
+        h2 span:nth-child(10) { animation-delay: 2.1s; }
+        h2 span:nth-child(13) { animation-delay: 0.3s; }
+        h2 span:nth-child(15) { animation-delay: 1.5s; }
+
+        .header-info {
+            margin-bottom: 25px;
+            font-weight: bold;
+            color: var(--neon-gold);
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 15px;
+            font-size: 15px;
+            text-shadow: 0 0 5px var(--gold-glow);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .item-box {
+            background: #000;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px;
+            transition: 0.3s;
+            box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.05);
+        }
+
+        .item-box:hover {
+            border-color: var(--neon-gold);
+            box-shadow: 0 0 15px var(--gold-glow);
+            transform: translateY(-3px);
+        }
+
+        .item-box label {
+            display: block;
+            color: var(--neon-gold);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 10px;
+            color: #fff;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--neon-gold);
+            box-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        .btn-reset {
+            width: 100%;
+            background: transparent;
+            color: var(--neon-red);
+            border: 2px solid var(--neon-red);
+            padding: 15px;
+            text-transform: uppercase;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            transition: 0.3s;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        .btn-reset:hover {
+            background: var(--neon-red);
+            color: white;
+            box-shadow: 0 0 20px var(--red-glow);
+        }
+
+        .result-section {
+            background: #000;
+            border: 2px solid var(--neon-gold);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.1);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 10px;
+        }
+
+        .result-title {
+            color: var(--neon-gold);
+            font-size: 0.9rem;
+            font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .btn-copy {
+            background: var(--neon-gold);
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-family: 'Orbitron', sans-serif;
+            transition: 0.3s;
+        }
+
+        .btn-copy:hover {
+            filter: brightness(1.2);
+            box-shadow: 0 0 15px var(--gold-glow);
+        }
+
+        #outputReport {
+            width: 100%;
+            height: 350px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            resize: none;
+            outline: none;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        #notif {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--neon-gold);
+            color: #000;
+            padding: 12px 40px;
+            border-radius: 50px;
+            display: none;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 0 30px var(--gold-glow);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-gold); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>
+        <span>R</span><span>E</span><span>P</span><span>O</span><span>R</span><span>T</span> &nbsp;
+        <span>D</span><span>A</span><span>I</span><span>L</span><span>Y</span> &nbsp;
+        <span>Q</span><span>R</span><span>I</span><span>S</span>
+    </h2>
+    
+    <div class="header-info">
+        Perihal : Report Qris MINERA, PRN, NST, V2HIM, PGA & ORION <br>
+        Tanggal : <span id="currentDate"></span>
+    </div>
+
+    <div class="grid-container" id="formInput">
+        <!-- Item 1 -->
+        <div class="item-box">
+            <label>Saldo Qris MNN & NST</label>
+            <div style="margin-bottom:10px">
+                <span style="font-size:0.75rem; color:#777; text-transform: uppercase;">Keterangan:</span>
+                <input type="text" class="ket" value="KLOP" oninput="updateLiveReport()">
+            </div>
+            <div>
+                <span style="font-size:0.75rem; color:#777; text-transform: uppercase;">Lampiran:</span>
+                <input type="text" class="lamp" placeholder="Tempel link..." oninput="updateLiveReport()">
+            </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="item-box">
+            <label>Saldo Qris PRN</label>
+            <div style="margin-bottom:10px">
+                <span style="font-size:0.75rem; color:#777; text-transform: uppercase;">Keterangan:</span>
+                <input type="text" class="ket" value="KLOP" oninput="updateLiveReport()">
+            </div>
+            <div>
+                <span style="font-size:0.75rem; color:#777; text-transform: uppercase;">Lampiran:</span>
+                <input type="text" class="lamp" placeholder="Tempel link..." oninput="updateLiveReport()">
+            </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="item-box">
+            <label>Saldo Qris ORION</label>
+            <div style="margin-bottom:10px">
+                <span style="font-size:0.75rem; color:#777; text-transform: uppercase;">Keterangan:</span>
+                <input type="text" class="ket" value="KLOP" oninput="updateLiveReport()">
+            </div>
+            <div>
+                <span style="font-size:0.75rem; color:#777; text-transform: uppercase;">Lampiran:</span>
+                <input type="text" class="lamp" placeholder="Tempel link..." oninput="updateLiveReport()">
+            </div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="item-box">
+            <label>Saldo Qris Minerapay</label>
+            <div style="margin-bottom:10px">
+                <span style="font-size:0.75rem; color:#777; text-transform: uppercase;">Keterangan:</span>
+                <input type="text" class="ket" value="KLOP" oninput="updateLiveReport()">
+            </div>
+            <div>
+                <span style="font-size:0.75rem; color:#777; text-transform: uppercase;">Lampiran:</span>
+                <input type="text" class="lamp" placeholder="Tempel link..." oninput="updateLiveReport()">
+            </div>
+        </div>
+
+        <!-- Item 5 -->
+        <div class="item-box">
+            <label>Saldo Qris V2HIM</label>
+            <div style="margin-bottom:10px">
+                <span style="font-size:0.75rem; color:#777; text-transform: uppercase;">Keterangan:</span>
+                <input type="text" class="ket" value="KLOP" oninput="updateLiveReport()">
+            </div>
+            <div>
+                <span style="font-size:0.75rem; color:#777; text-transform: uppercase;">Lampiran:</span>
+                <input type="text" class="lamp" placeholder="Tempel link..." oninput="updateLiveReport()">
+            </div>
+        </div>
+
+        <!-- Item 6 -->
+        <div class="item-box">
+            <label>Saldo Qris PGA</label>
+            <div style="margin-bottom:10px">
+                <span style="font-size:0.75rem; color:#777; text-transform: uppercase;">Keterangan:</span>
+                <input type="text" class="ket" value="KLOP" oninput="updateLiveReport()">
+            </div>
+            <div>
+                <span style="font-size:0.75rem; color:#777; text-transform: uppercase;">Lampiran:</span>
+                <input type="text" class="lamp" placeholder="Tempel link..." oninput="updateLiveReport()">
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-reset" onclick="resetForm()">Bersihkan Semua Data</button>
+
+    <div class="result-section">
+        <div class="result-header">
+            <div class="result-title">HASIL LAPORAN GABUNGAN SYSTEM</div>
+            <button class="btn-copy" onclick="copyReport()">📋 COPY SEMUA</button>
+        </div>
+        <textarea id="outputReport" readonly>Menunggu data...</textarea>
+    </div>
+</div>
+
+<div id="notif">DATA BERHASIL DISALIN!</div>
+
+<script>
+    function updateDate() {
+        const now = new Date();
+        const d = String(now.getDate()).padStart(2, '0');
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const y = now.getFullYear();
+        document.getElementById('currentDate').innerText = `${d} - ${m} - ${y}`;
+    }
+
+    function updateLiveReport() {
+        const tgl = document.getElementById('currentDate').innerText;
+        const boxes = document.querySelectorAll('.item-box');
+        let reportText = `Perihal : Report Qris MINERA , PRN , NST , V2HIM, PGA & ORION\n`;
+        reportText += `Tanggal : ${tgl}\n\n`;
+
+        boxes.forEach((box) => {
+            const label = box.querySelector('label').innerText;
+            const ket = box.querySelector('.ket').value || "-";
+            const lamp = box.querySelector('.lamp').value || "-";
+            reportText += `${label}\nKeterangan : ${ket}\nLampiran : ${lamp}\n\n`;
+        });
+
+        document.getElementById('outputReport').value = reportText.trim();
+    }
+
+    function copyReport() {
+        const copyText = document.getElementById("outputReport");
+        copyText.select();
+        navigator.clipboard.writeText(copyText.value);
+        const notif = document.getElementById('notif');
+        notif.style.display = 'block';
+        setTimeout(() => { notif.style.display = 'none'; }, 2000);
+    }
+
+    function resetForm() {
+        document.querySelectorAll('.ket').forEach(input => input.value = 'KLOP');
+        document.querySelectorAll('.lamp').forEach(input => input.value = '');
+        updateLiveReport();
+    }
+
+    updateDate();
+    updateLiveReport();
+</script>
+
+</body>
+</html>

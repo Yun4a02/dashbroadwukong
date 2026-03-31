@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Prediksi Jitu - TogelUp HD Premium</title>
+    
+    <link rel="icon" type="image/png" href="https://i.imgur.com/pDQOisi.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style>
+        :root {
+            --aqua: #00fbff;
+            --lime: #39ff14;
+            --glow: rgba(0, 251, 255, 0.6);
+            --bg-url: url('https://hokibagus.blr1.digitaloceanspaces.com/assets/cdn/2023/10/11/20231011/691fc7fe2d5e1901cd20a394d8d0ea7c/togelup_bg_new6.jpg');
+        }
+
+        /* RESET */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #000c14;
+            color: #ffffff;
+            font-family: 'Arial Black', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .main-view {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-image: var(--bg-url);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        /* --- AREA EXPORT (DIBUAT KOTAK SEMPURNA TANPA BORDER RADIUS) --- */
+        #export-area {
+            padding: 25px 35px; 
+            width: 100%;
+            max-width: 600px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-image: var(--bg-url);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            /* Border radius dihapus agar tidak ada putih-putih di pojok saat save */
+            border-radius: 0; 
+        }
+
+        /* Overlay gelap untuk area export */
+        #export-area::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 0;
+            border-radius: 0; /* Dihapus juga di sini */
+        }
+
+        #export-area > * { position: relative; z-index: 1; }
+
+        .header-top {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .title-text {
+            font-size: 26px; 
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px var(--aqua);
+            text-transform: uppercase;
+        }
+
+        .logo-box {
+            width: 200px;
+            margin-bottom: -4px;
+            filter: drop-shadow(0 0 10px var(--glow));
+        }
+
+        /* FRAME TABEL (Tetap melengkung di dalam tidak apa-apa) */
+        .main-frame {
+            width: 100%;
+            border: 3px solid var(--aqua);
+            border-radius: 12px;
+            padding: 18px; 
+            box-shadow: inset 0 0 15px var(--glow), 0 0 25px var(--glow);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        .pasaran-oval {
+            border: 2px dashed var(--lime);
+            border-radius: 100px;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 8px;
+            width: 85%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #res-pasaran { font-size: 24px; font-weight: 900; text-shadow: 0 0 10px var(--aqua); }
+        
+        #res-tanggal { 
+            text-align: center; 
+            font-size: 15px; 
+            color: var(--lime); 
+            margin-bottom: 12px; 
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* DATA TABLE */
+        .data-table { width: 100%; border-collapse: collapse; border: 1.5px solid var(--aqua); }
+        .data-table td { padding: 12px; border: 1px solid var(--aqua); font-size: 17px; text-align: center; font-weight: bold; }
+        .label-col { width: 38%; color: var(--aqua); background: rgba(0, 251, 255, 0.1); font-size: 13px; text-transform: uppercase;}
+        
+        #res-shio { color: var(--lime); font-size: 24px; text-shadow: 0 0 10px var(--lime); text-transform: uppercase; }
+
+        /* --- CONTROLS --- */
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 10;
+            background: rgba(0, 18, 26, 0.9);
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 1px solid var(--aqua);
+        }
+
+        .edit-date-group { display: flex; gap: 10px; align-items: center; font-family: sans-serif; }
+        .edit-date-group label { font-size: 12px; color: var(--aqua); text-transform: uppercase; font-weight: bold; }
+
+        .date-input {
+            background: #000;
+            border: 1px solid var(--aqua);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: center;
+            text-transform: uppercase;
+            outline: none;
+        }
+
+        .btn-group { display: flex; gap: 12px; }
+
+        .btn {
+            padding: 10px 25px;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 100px;
+            cursor: pointer;
+            border: 2px solid #fff;
+            transition: 0.3s;
+        }
+
+        .btn-gen { background: linear-gradient(135deg, var(--aqua), var(--lime)); color: #000; }
+        .btn-save { background: linear-gradient(135deg, #ffcc00, #ff6600); color: #fff; }
+        .btn:hover { transform: scale(1.05); }
+
+    </style>
+</head>
+<body onload="initApp()">
+
+    <div class="main-view">
+        
+        <div id="export-area">
+            <div class="header-top">
+                <div class="title-text">PREDIKSI JITU</div>
+                <div class="logo-box">
+                    <img src="https://files.catbox.moe/70x8f3.png" alt="Logo" style="width:100%">
+                </div>
+            </div>
+            
+            <div class="main-frame">
+                <div class="pasaran-oval">
+                    <div id="res-pasaran">SIAP GENERATE</div>
+                </div>
+                <div id="res-tanggal">-- --- ----</div>
+                
+                <table class="data-table">
+                    <tr><td class="label-col">BBFS</td><td id="res-bbfs">-</td></tr>
+                    <tr><td class="label-col">ANGKA MAIN</td><td id="res-main">-</td></tr>
+                    <tr><td class="label-col">4D</td><td id="res-4d">-</td></tr>
+                    <tr><td class="label-col">3D</td><td id="res-3d">-</td></tr>
+                    <tr><td class="label-col">2D</td><td id="res-2d">-</td></tr>
+                    <tr><td class="label-col">CB 2D</td><td id="res-cb2d">-</td></tr>
+                    <tr><td class="label-col">COLOK BEBAS</td><td id="res-cb">-</td></tr>
+                    <tr><td class="label-col">SHIO</td><td id="res-shio">-</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="edit-date-group">
+                <label>EDIT DATE:</label>
+                <input type="number" id="input-tgl" class="date-input" style="width: 65px;" oninput="updateTeksTanggal()">
+                <select id="input-bln" class="date-input" style="width: 140px;" onchange="updateTeksTanggal()">
+                    <option value="JANUARY">JANUARY</option>
+                    <option value="FEBRUARY">FEBRUARY</option>
+                    <option value="MARCH">MARCH</option>
+                    <option value="APRIL">APRIL</option>
+                    <option value="MAY">MAY</option>
+                    <option value="JUNE">JUNE</option>
+                    <option value="JULY">JULY</option>
+                    <option value="AUGUST">AUGUST</option>
+                    <option value="SEPTEMBER">SEPTEMBER</option>
+                    <option value="OCTOBER">OCTOBER</option>
+                    <option value="NOVEMBER">NOVEMBER</option>
+                    <option value="DECEMBER">DECEMBER</option>
+                </select>
+                <input type="number" id="input-thn" class="date-input" style="width: 90px;" oninput="updateTeksTanggal()">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-gen" onclick="generateSemua()">GENERATE</button>
+                <button class="btn btn-save" onclick="saveHD()">SAVE IMG </button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const daftarPasaran = ["HOKIDRAW", "TOTO MACAU 4D PAGI", "KENTUCKYMID", "FLORIDAMID", "HUAHIN 0100", "BANGKOK 0130", "NEWYORKMID", "CAROLINADAY", "BRUNEI02", "OREGON03", "OREGON06", "CALIFORNIA", "FLORIDAEVE", "OREGON09", "BANGKOK 0930", "NEWYORKEVE", "KENTUCKYEVE", "CAROLINAEVE", "TOTOCAMBODIA", "CHELSEA 11", "OREGON12", "POIPET12", "BULLSEYE", "TOTO MACAU 4D SIANG", "SYDNEY", "JAKARTA 1400", "BRUNEI14", "CHELSEA 15", "TOTO MACAU 5D SORE", "POIPET15", "TOTOMALI1530", "TOTOMACAU SORE", "HUAHIN 1630", "KING KONG4D I", "SINGAPORE", "MAGNUM4D", "TOTOMACAU MALAM I", "CHELSEA 19", "POIPET19", "PCSO", "TOTOMALI 2030", "HUAHIN 2100", "CHELSEA 21", "TOTOMACAU 5D MALAM", "NEVADA", "BRUNEI 21", "TOTOMACAU MALAM II", "POIPET22", "HONGKONG", "TOTOMACAU MALAM III", "TOTOMALI 2330", "JAKARTA 2330", "KING KONG4D II"]; 
+    
+    const dataShio = [
+        { nama: "KUDA", nomor: ["01", "13", "25", "37", "49", "61", "73", "85", "97"] },
+        { nama: "ULAR", nomor: ["02", "14", "26", "38", "50", "62", "74", "86", "98"] },
+        { nama: "NAGA", nomor: ["03", "15", "27", "39", "51", "63", "75", "87", "99"] },
+        { nama: "KELINCI", nomor: ["04", "16", "28", "40", "52", "64", "76", "88", "00"] },
+        { nama: "HARIMAU", nomor: ["05", "17", "29", "41", "53", "65", "77", "89"] },
+        { nama: "KERBAU", nomor: ["06", "18", "30", "42", "54", "66", "78", "90"] },
+        { nama: "TIKUS", nomor: ["07", "19", "31", "43", "55", "67", "79", "91"] },
+        { nama: "BABI", nomor: ["08", "20", "32", "44", "56", "68", "80", "92"] },
+        { nama: "ANJING", nomor: ["09", "21", "33", "45", "57", "69", "81", "93"] },
+        { nama: "AYAM", nomor: ["10", "22", "34", "46", "58", "70", "82", "94"] },
+        { nama: "MONYET", nomor: ["11", "23", "35", "47", "59", "71", "83", "95"] },
+        { nama: "KAMBING", nomor: ["12", "24", "36", "48", "60", "72", "84", "96"] }
+    ];
+
+    const monthsEng = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+
+    function setRealTimeDate() {
+        const d = new Date();
+        document.getElementById('input-tgl').value = d.getDate();
+        document.getElementById('input-bln').value = monthsEng[d.getMonth()];
+        document.getElementById('input-thn').value = d.getFullYear();
+    }
+
+    function initApp() {
+        setRealTimeDate();
+        updateTeksTanggal();
+    }
+
+    function updateTeksTanggal() {
+        const tgl = document.getElementById('input-tgl').value;
+        const bln = document.getElementById('input-bln').value;
+        const thn = document.getElementById('input-thn').value;
+        document.getElementById('res-tanggal').innerText = `${tgl} ${bln} ${thn}`;
+    }
+
+    function acak(jumlah) {
+        let h = "";
+        for(let i=0; i<jumlah; i++) h += Math.floor(Math.random()*10);
+        return h;
+    }
+
+    function generateSemua() {
+        setRealTimeDate();
+        updateTeksTanggal();
+
+        const p = daftarPasaran[Math.floor(Math.random() * daftarPasaran.length)];
+        document.getElementById('res-pasaran').innerText = p;
+        document.getElementById('res-bbfs').innerText = acak(7);
+        document.getElementById('res-main').innerText = acak(5);
+        let d4 = acak(4);
+        document.getElementById('res-4d').innerText = d4 + " , " + acak(4) + " , " + acak(4) + " , " + acak(4);
+        document.getElementById('res-3d').innerText = acak(3) + " , " + acak(3) + " , " + acak(3) + " , " + acak(3);
+        document.getElementById('res-2d').innerText = acak(2) + " , " + acak(2) + " , " + acak(2) + " , " + acak(2);
+        document.getElementById('res-cb2d').innerText = acak(2) + " , " + acak(2) + " , " + acak(2);
+        document.getElementById('res-cb').innerText = acak(1) + " , " + acak(1);
+        let duaDigit = d4.substring(2);
+        let shio = "ULAR";
+        for(let s of dataShio) { if(s.nomor.includes(duaDigit)) { shio = s.nama; break; } }
+        document.getElementById('res-shio').innerText = shio;
+    }
+
+    function saveHD() {
+        const area = document.getElementById('export-area');
+        const psrn = document.getElementById('res-pasaran').innerText;
+        
+        // Memaksa background berwarna solid saat capture jika ada glitch transparansi
+        html2canvas(area, { 
+            scale: 2, 
+            useCORS: true, 
+            backgroundColor: "#000c14" 
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `PREDIKSI-${psrn}.jpg`;
+            link.href = canvas.toDataURL('image/jpeg', 1.0);
+            link.click();
+        });
+    }
+</script>
+</body>
+</html>

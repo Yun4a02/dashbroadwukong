@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PENCAIRAN MINERAPAY</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --card-bg: #141414;
+            --gold-primary: #d4af37;
+            --gold-light: #f9e29c;
+            --gold-dark: #aa8439;
+            --gold-glow: rgba(212, 175, 55, 0.5);
+            --border: rgba(212, 175, 55, 0.2);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1350px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold-primary);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        .flicker-char {
+            display: inline-block;
+            animation: neonFlicker 3s linear infinite;
+        }
+
+        @keyframes neonFlicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 10px var(--gold-primary), 0 0 20px var(--gold-dark);
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                opacity: 0.4;
+                text-shadow: none;
+            }
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column; gap: 10px;
+        }
+
+        label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px; color: var(--gold-primary);
+            font-weight: 700; letter-spacing: 1px;
+        }
+
+        textarea {
+            width: 100%; height: 180px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 12px; padding: 15px;
+            color: #fff; font-size: 14px;
+            font-family: 'Consolas', monospace;
+            resize: none; outline: none;
+            transition: var(--transition);
+        }
+
+        textarea:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+        }
+
+        .btn-group {
+            display: flex; gap: 15px; margin-bottom: 30px;
+        }
+
+        button {
+            flex: 1; padding: 15px; border: none;
+            border-radius: 10px; cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700; text-transform: uppercase;
+            transition: var(--transition);
+        }
+
+        .btn-clear { background: transparent; border: 1px solid #ff4b2b; color: #ff4b2b; width: 100%; }
+        .btn-clear:hover { background: rgba(255, 75, 43, 0.1); }
+
+        /* --- TABLE AREA --- */
+        .result-container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px; margin-bottom: 30px;
+        }
+
+        .result-col {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            min-height: 300px;
+            display: flex; flex-direction: column;
+        }
+
+        .col-header {
+            background: rgba(212, 175, 55, 0.1);
+            padding: 12px; text-align: center;
+            color: var(--gold-primary); font-weight: 700;
+            border-bottom: 1px solid var(--border);
+            font-size: 11px; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+
+        .copy-emoji { cursor: pointer; font-size: 18px; transition: 0.2s; color: var(--gold-primary); }
+        .copy-emoji:hover { transform: scale(1.3); filter: brightness(1.2); }
+
+        .item-list {
+            padding: 5px; font-family: 'Consolas', monospace; font-size: 13px;
+            flex-grow: 1;
+        }
+
+        .item-row {
+            padding: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #fff; font-weight: 700;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        .total-box-visual {
+            padding: 12px 10px;
+            color: #f1c40f; 
+            font-weight: 800;
+            border-top: 2px solid var(--gold-primary);
+            background: rgba(212, 175, 55, 0.05);
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        /* --- SUMMARY AREA --- */
+        .full-report-section {
+            background: rgba(212, 175, 55, 0.02);
+            border: 1px dashed var(--gold-primary);
+            border-radius: 15px; padding: 20px;
+        }
+
+        .full-report-header {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 15px;
+        }
+
+        .full-report-header h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px; color: var(--gold-primary);
+        }
+
+        #fullReportArea {
+            width: 100%; height: 400px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; color: #ffffff;
+            padding: 20px; font-family: 'Consolas', monospace;
+            font-size: 14px; line-height: 1.6;
+            overflow-y: auto; white-space: pre-wrap;
+            font-weight: 600;
+        }
+
+        .toast {
+            position: fixed; bottom: 30px;
+            left: 50%; transform: translateX(-50%);
+            background: var(--gold-primary); color: #000;
+            padding: 10px 30px; border-radius: 50px;
+            font-weight: 800; font-size: 12px;
+            display: none; z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 id="main-title">PENCAIRAN MINERAPAY</h2>
+
+    <div class="input-grid">
+        <div class="input-group">
+            <label>TEMPEL REPORT TRANSAKSI :</label>
+            <textarea id="inputText" placeholder="Tempel report transaksi di sini..." oninput="processData()"></textarea>
+        </div>
+        <div class="input-group">
+            <label>LAMPIRAN LINK :</label>
+            <textarea id="inputLampiran" placeholder="Tempel banyak link di sini..." oninput="processData()"></textarea>
+        </div>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn-clear" onclick="clearAll()">BERSIHKAN SEMUA DATA</button>
+    </div>
+
+    <!-- TABEL VISUAL -->
+    <div class="result-container">
+        <div class="result-col">
+            <div class="col-header">BANK <span class="copy-emoji" onclick="copyColumn('colBank')">📋</span></div>
+            <div id="colBank" class="item-list"></div>
+        </div>
+        <div class="result-col">
+            <div class="col-header">NAMA <span class="copy-emoji" onclick="copyColumn('colName')">📋</span></div>
+            <div id="colName" class="item-list"></div>
+        </div>
+        <div class="result-col">
+            <div class="col-header">NO REK <span class="copy-emoji" onclick="copyColumn('colNumber')">📋</span></div>
+            <div id="colNumber" class="item-list"></div>
+        </div>
+        <div class="result-col">
+            <div class="col-header">NOMINAL <span class="copy-emoji" onclick="copyColumn('colAmount')">📋</span></div>
+            <div id="colAmount" class="item-list"></div>
+            <div id="visualTotalNominal" class="total-box-visual" style="display:none;"></div>
+        </div>
+        <div class="result-col">
+            <div class="col-header">BIAYA <span class="copy-emoji" onclick="copyColumn('colFee')">📋</span></div>
+            <div id="colFee" class="item-list"></div>
+            <div id="visualTotalFee" class="total-box-visual" style="display:none;"></div>
+        </div>
+        <div class="result-col">
+            <div class="col-header">LAMPIRAN <span class="copy-emoji" onclick="copyColumn('colLink', true)">📋</span></div>
+            <div id="colLink" class="item-list"></div>
+        </div>
+    </div>
+
+    <!-- HASIL LAPORAN GABUNGAN -->
+    <div class="full-report-section">
+        <div class="full-report-header">
+            <h3>HASIL LAPORAN GABUNGAN</h3>
+            <span class="copy-emoji" style="font-size: 20px;" onclick="copyFullReport()">📋 COPY SEMUA</span>
+        </div>
+        <div id="fullReportArea">Menunggu data ditempel...</div>
+    </div>
+</div>
+
+<div id="toast" class="toast">BERHASIL DISALIN!</div>
+
+<script>
+    function applyNeonFlicker(elementId) {
+        const el = document.getElementById(elementId);
+        const text = el.innerText;
+        el.innerHTML = '';
+        text.split('').forEach(char => {
+            const span = document.createElement('span');
+            span.innerHTML = (char === ' ') ? '&nbsp;' : char;
+            span.className = 'flicker-char';
+            span.style.animationDelay = (Math.random() * 5) + 's';
+            el.appendChild(span);
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        applyNeonFlicker('main-title');
+    });
+
+    function processData() {
+        const rawReport = document.getElementById('inputText').value;
+        const rawLinks = document.getElementById('inputLampiran').value;
+        
+        ['colBank', 'colName', 'colNumber', 'colAmount', 'colFee', 'colLink'].forEach(id => document.getElementById(id).innerHTML = "");
+        
+        let totalSum = 0;
+        let totalFee = 0;
+
+        const lines = rawReport.split('\n');
+        let currentBank = "-", currentName = "-", currentNumber = "-", currentAmountStr = "-";
+        let hasBank = false, hasName = false, hasNumber = false, hasAmount = false;
+
+        // DAFTAR BANK DIURUTKAN DARI YANG TERPANJANG (Agar Danamon terbaca sebelum Dana)
+        const bankList = ["DANAMON", "MANDIRI", "PERMATA", "MAYBANK", "LINKAJA", "SHOPEEPAY", "SEABANK", "DANA", "BCA", "BNI", "BRI", "CIMB", "PANIN", "OCBC", "BSI", "OVO", "GOPAY", "NEO"];
+        bankList.sort((a, b) => b.length - a.length);
+
+        lines.forEach((line) => {
+            const clean = line.trim();
+            if (!clean) return;
+
+            // 1. DETEKSI BANK (Pengecekan spesifik agar tidak salah ambil DANA vs DANAMON)
+            for (let b of bankList) {
+                if (clean.toUpperCase().includes(b)) {
+                    currentBank = b;
+                    hasBank = true;
+                    break; 
+                }
+            }
+
+            // 2. DETEKSI NAMA
+            if (clean.toLowerCase().includes("nama") || clean.toLowerCase().includes("a/n")) {
+                currentName = clean.split(/[:>-]/).pop().trim().toUpperCase();
+                hasName = true;
+            }
+
+            // 3. DETEKSI NO REK
+            if (clean.match(/(no|nomor|rek)/i) || clean.match(/^\d+$/)) {
+                const nMatch = clean.match(/\d{7,25}/);
+                if (nMatch) {
+                    currentNumber = nMatch[0];
+                    hasNumber = true;
+                }
+            }
+
+            // 4. DETEKSI NOMINAL (Fix: Hapus titik/koma agar angka utuh tetap terbaca)
+            if (clean.toLowerCase().includes("nominal") || clean.toLowerCase().includes("jumlah") || clean.toLowerCase().includes("rp")) {
+                const aMatch = clean.match(/[\d.,]{2,}/);
+                if (aMatch) {
+                    // MENGHAPUS SEMUA NON-ANGKA (Titik dan Koma dibuang untuk hitungan)
+                    currentAmountStr = aMatch[0].replace(/[^0-9]/g, '');
+                    hasAmount = true;
+                }
+            }
+
+            // PROSES JIKA SUDAH LENGKAP
+            if (hasName && hasNumber && hasAmount) {
+                let numValue = parseInt(currentAmountStr);
+                if (isNaN(numValue)) numValue = 0;
+                totalSum += numValue;
+
+                // Logika Pecah (tetap 50jt)
+                if (numValue > 50000000) {
+                     let tempVal = numValue;
+                     while (tempVal > 50000000) {
+                        addEntryToTable(currentBank, currentName, currentNumber, 50000000, 3500);
+                        totalFee += 3500;
+                        tempVal -= 50000000;
+                     }
+                     if (tempVal > 0) {
+                        addEntryToTable(currentBank, currentName, currentNumber, tempVal, 3500);
+                        totalFee += 3500;
+                     }
+                } else {
+                    addEntryToTable(currentBank, currentName, currentNumber, numValue, 3500);
+                    totalFee += 3500;
+                }
+
+                currentBank = "-"; currentName = "-"; currentNumber = "-"; currentAmountStr = "-";
+                hasBank = false; hasName = false; hasNumber = false; hasAmount = false;
+            }
+        });
+
+        const totalBox = document.getElementById('visualTotalNominal');
+        const feeBox = document.getElementById('visualTotalFee');
+        if (totalSum > 0) {
+            totalBox.style.display = "block";
+            totalBox.innerText = "TOTAL: " + totalSum.toLocaleString('en-US');
+            feeBox.style.display = "block";
+            feeBox.innerText = "FEE: " + totalFee.toLocaleString('en-US');
+        } else {
+            totalBox.style.display = "none";
+            feeBox.style.display = "none";
+        }
+
+        const areaGabungan = document.getElementById('fullReportArea');
+        if (!rawReport.trim() && !rawLinks.trim()) {
+            areaGabungan.innerText = "Menunggu data ditempel...";
+        } else {
+            let finalOutput = rawReport.trim();
+            if (totalSum > 0) {
+                finalOutput += "\n\nTOTAL NOMINAL : " + totalSum.toLocaleString('en-US');
+            }
+            finalOutput += "\n\nLampiran :\n" + (rawLinks.trim() ? rawLinks.trim() : "-");
+            areaGabungan.innerText = finalOutput;
+        }
+
+        const linkArray = rawLinks.split('\n').filter(l => l.trim() !== "");
+        linkArray.forEach(link => appendToColumn('colLink', link.trim()));
+    }
+
+    function addEntryToTable(bank, name, number, amount, fee) {
+        appendToColumn('colBank', bank);
+        appendToColumn('colName', name);
+        appendToColumn('colNumber', number);
+        appendToColumn('colAmount', amount.toLocaleString('en-US'));
+        appendToColumn('colFee', fee.toLocaleString('en-US'));
+    }
+
+    function appendToColumn(id, text) {
+        const container = document.getElementById(id);
+        const div = document.createElement('div');
+        div.className = 'item-row';
+        div.innerText = text;
+        container.appendChild(div);
+    }
+
+    function copyColumn(id, isLampiran = false) {
+        const rows = document.getElementById(id).getElementsByClassName('item-row');
+        if (rows.length === 0) return;
+        let textToCopy = isLampiran ? "Lampiran :\n" : "";
+        for (let i = 0; i < rows.length; i++) {
+            textToCopy += rows[i].innerText + "\n";
+        }
+        executeCopy(textToCopy.trim());
+    }
+
+    function copyFullReport() {
+        const text = document.getElementById('fullReportArea').innerText;
+        if (text.includes("Menunggu")) return;
+        executeCopy(text);
+    }
+
+    function executeCopy(text) {
+        const el = document.createElement('textarea');
+        el.value = text;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        const t = document.getElementById('toast');
+        t.style.display = "block";
+        setTimeout(() => t.style.display = "none", 1500);
+    }
+
+    function clearAll() {
+        document.getElementById('inputText').value = "";
+        document.getElementById('inputLampiran').value = "";
+        processData();
+    }
+</script>
+
+</body>
+</html>

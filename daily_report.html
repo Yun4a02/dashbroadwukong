@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Report System - WUKONG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f0f0f; /* Abu-abu Gelap */
+            --card-bg: #1a1a1a; 
+            --neon-gold: #d4af37; /* Emas Metallic */
+            --gold-glow: rgba(212, 175, 55, 0.6);
+            --neon-red: #ff3c00;
+            --red-glow: rgba(255, 60, 0, 0.5);
+            --text-main: #e0e6ed;
+        }
+
+        /* --- ANTI-LAG & BOLD RESET --- */
+        * { 
+            box-sizing: border-box; 
+            font-weight: 900 !important; 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 50%, #1e1e1e 0%, #0f0f0f 100%);
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            margin: 0;
+            padding: 10px 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- LETTER BY LETTER FLICKER ANIMATION --- */
+        @keyframes charFlicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: 1; text-shadow: 0 0 10px var(--gold-glow), 0 0 20px var(--neon-gold);
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                opacity: 0.4; text-shadow: none;
+            }
+        }
+
+        .main-header-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-gold);
+            font-size: 26px;
+            letter-spacing: 5px;
+            text-align: center;
+            margin: 15px 0 20px 0;
+            text-transform: uppercase;
+        }
+
+        .main-header-title span {
+            display: inline-block;
+            animation: charFlicker 5s infinite;
+        }
+        /* Penundaan acak untuk tiap huruf */
+        .main-header-title span:nth-child(1) { animation-delay: 0.1s; }
+        .main-header-title span:nth-child(3) { animation-delay: 0.5s; }
+        .main-header-title span:nth-child(5) { animation-delay: 1.2s; }
+        .main-header-title span:nth-child(7) { animation-delay: 0.8s; }
+        .main-header-title span:nth-child(9) { animation-delay: 2.1s; }
+        .main-header-title span:nth-child(11) { animation-delay: 0.3s; }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            flex: 1;
+            min-height: 0;
+            margin-bottom: 10px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 2px solid var(--neon-gold);
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 30px rgba(0,0,0,0.6);
+            height: 100%;
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-gold);
+            font-size: 13px;
+            margin-bottom: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            background: rgba(212, 175, 55, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-ui);
+            text-shadow: 0 0 5px var(--gold-glow);
+        }
+
+        /* --- BUTTON GROUP --- */
+        .btn-group-top { display: flex; gap: 8px; margin-bottom: 12px; }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            font-size: 11px;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+        .btn-copy { 
+            background: var(--neon-gold); 
+            color: black; 
+            box-shadow: 0 0 15px var(--gold-glow);
+        }
+        .btn-reset { 
+            background: var(--neon-red); 
+            color: white; 
+            box-shadow: 0 0 15px var(--red-glow);
+        }
+        .btn:hover { filter: brightness(1.2); transform: translateY(-3px); }
+
+        .scroll-input {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .preview-box-individual, .preview-box-rekapan {
+            flex: 1;
+            background: #000;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            border-left: 4px solid var(--neon-gold);
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-y: auto;
+            color: #fff;
+        }
+
+        .textarea-rekapan {
+            height: 50%;
+            width: 100%;
+            background: #000;
+            border: 1px solid #333;
+            padding: 12px;
+            color: white;
+            border-radius: 8px;
+            outline: none;
+            font-size: 13px;
+            resize: none;
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--neon-gold);
+        }
+
+        /* SCROLLBAR STYLE */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-gold); border-radius: 10px; }
+
+        label { display: block; font-size: 11px; color: var(--neon-gold); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        input {
+            width: 100%;
+            background: #000;
+            border: 1px solid #333;
+            padding: 12px;
+            color: white;
+            border-radius: 6px;
+            outline: none;
+            font-size: 13px;
+            margin-bottom: 12px;
+            transition: 0.3s;
+        }
+        input:focus { border-color: var(--neon-gold); box-shadow: 0 0 10px var(--gold-glow); }
+
+        .shift-container { display: flex; gap: 5px; margin-bottom: 15px; }
+        .shift-btn {
+            flex: 1; padding: 10px; border: 1px solid var(--neon-gold);
+            background: transparent; color: var(--neon-gold);
+            cursor: pointer; border-radius: 6px;
+            font-size: 10px; font-family: 'Orbitron';
+            transition: 0.3s;
+        }
+        .shift-btn.active { background: var(--neon-gold); color: black; box-shadow: 0 0 15px var(--gold-glow); }
+
+    </style>
+</head>
+<body>
+
+    <div class="main-header-title">
+        <span>D</span><span>A</span><span>I</span><span>L</span><span>Y</span> &nbsp; 
+        <span>R</span><span>E</span><span>P</span><span>O</span><span>R</span><span>T</span> &nbsp; 
+        <span>S</span><span>Y</span><span>S</span><span>T</span><span>E</span><span>M</span>
+    </div>
+
+    <div class="main-grid">
+        <!-- KOLOM 1: INPUT DATA -->
+        <div class="card">
+            <h2>INPUT DATA</h2>
+            <div class="shift-container">
+                <button class="shift-btn" id="btn-PAGI" onclick="setShift('PAGI')">PAGI</button>
+                <button class="shift-btn" id="btn-SORE" onclick="setShift('SORE')">SORE</button>
+                <button class="shift-btn" id="btn-MALAM" onclick="setShift('MALAM')">MALAM</button>
+            </div>
+            <div class="scroll-input">
+                <div class="input-wrapper"><label>Link Daftar</label><input type="text" id="in_daftar" placeholder="Input link..." oninput="updateReport()"></div>
+                <div class="input-wrapper"><label>Link Alternatif</label><input type="text" id="in_alt" placeholder="Input link..." oninput="updateReport()"></div>
+                <div class="input-wrapper"><label>Livechat</label><input type="text" id="in_live" placeholder="Input link..." oninput="updateReport()"></div>
+                <div class="input-wrapper"><label>Facebook</label><input type="text" id="in_fb" placeholder="Input link..." oninput="updateReport()"></div>
+                <div class="input-wrapper"><label>WhatsApp</label><input type="text" id="in_wa" placeholder="Input link..." oninput="updateReport()"></div>
+                <div class="input-wrapper"><label>RTP</label><input type="text" id="in_rtp" placeholder="Input link..." oninput="updateReport()"></div>
+                <div class="input-wrapper"><label>Promo & Bonus</label><input type="text" id="in_promo" placeholder="Input link..." oninput="updateReport()"></div>
+                <div class="input-wrapper"><label>Prediksi</label><input type="text" id="in_prediksi" placeholder="Input link..." oninput="updateReport()"></div>
+            </div>
+        </div>
+
+        <!-- KOLOM 2: PREVIEW INDIVIDUAL -->
+        <div class="card">
+            <h2>PREVIEW INDIVIDUAL</h2>
+            <div class="btn-group-top">
+                <button class="btn btn-copy" onclick="copyText('reportResult')">COPY REPORT</button>
+                <button class="btn btn-reset" onclick="resetIndividual()">RESET</button>
+            </div>
+            <div class="preview-box-individual" id="reportResult"></div>
+        </div>
+
+        <!-- KOLOM 3: REKAPAN HARIAN -->
+        <div class="card">
+            <h2>REKAPAN DAILY REPORT</h2>
+            <div class="btn-group-top">
+                <button class="btn btn-copy" onclick="copyText('rekapanResult')">COPY REKAPAN</button>
+                <button class="btn btn-reset" onclick="resetRekapan()">RESET ALL</button>
+            </div>
+            <textarea class="textarea-rekapan" id="in_rekapan" placeholder="Tempel kumpulan reportan di sini..." oninput="updateRekapan()"></textarea>
+            <div class="preview-box-rekapan" id="rekapanResult"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentStaff = "";
+
+        function getIndoDate() {
+            const now = new Date();
+            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            return `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+        }
+
+        function autoDetectShift() {
+            const hour = new Date().getHours();
+            if (hour >= 7 && hour < 15) return "PAGI";
+            if (hour >= 15 && hour < 21) return "SORE";
+            return "MALAM";
+        }
+
+        function setShift(shift) {
+            document.querySelectorAll('.shift-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${shift}`).classList.add('active');
+            currentStaff = `CS LINE ${shift}`;
+            updateReport();
+        }
+
+        function updateReport() {
+            const report = `Info : Togelup\nPerihal : Pengecekan Bot Telegram\nStaff : ${currentStaff}\nTanggal : ${getIndoDate()}\n\nLink daftar : ${document.getElementById('in_daftar').value}\nLink alternatif : ${document.getElementById('in_alt').value}\nlivechat : ${document.getElementById('in_live').value}\nfacebook : ${document.getElementById('in_fb').value}\nwhatsapp : ${document.getElementById('in_wa').value}\nRTP : ${document.getElementById('in_rtp').value}\nPromo & Bonus : ${document.getElementById('in_promo').value}\nPrediksi : ${document.getElementById('in_prediksi').value}`;
+            document.getElementById('reportResult').innerText = report;
+        }
+
+        function updateRekapan() {
+            const content = document.getElementById('in_rekapan').value;
+            // Simpan ke localStorage agar tidak hilang saat refresh atau pindah menu
+            localStorage.setItem('saved_rekapan_wukong', content);
+            
+            const rekapan = `Info : Togelup\nPerihal : Rekapan Daily Report Tanggal ${getIndoDate()}\n\n${content}`;
+            document.getElementById('rekapanResult').innerText = rekapan;
+        }
+
+        function copyText(id) {
+            const text = document.getElementById(id).innerText;
+            const elem = document.createElement('textarea');
+            elem.value = text;
+            document.body.appendChild(elem);
+            elem.select();
+            document.execCommand('copy');
+            document.body.removeChild(elem);
+        }
+
+        function resetIndividual() {
+            const inputs = document.querySelectorAll('.scroll-input input');
+            inputs.forEach(input => input.value = "");
+            updateReport();
+        }
+
+        function resetRekapan() {
+            if(confirm("Hapus semua rekapan?")) {
+                document.getElementById('in_rekapan').value = "";
+                // Hapus data dari localStorage
+                localStorage.removeItem('saved_rekapan_wukong');
+                updateRekapan();
+            }
+        }
+
+        window.onload = function() {
+            setShift(autoDetectShift());
+            
+            // Cek apakah ada data rekapan yang tersimpan sebelumnya
+            const savedData = localStorage.getItem('saved_rekapan_wukong');
+            if (savedData) {
+                document.getElementById('in_rekapan').value = savedData;
+            }
+            
+            updateRekapan();
+        };
+    </script>
+</body>
+</html>

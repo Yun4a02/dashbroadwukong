@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USDT Rate Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #0f0f0f; /* Abu-abu Gelap */
+            --card-bg: #1a1a1a;
+            --neon-gold: #d4af37; /* Emas Metallic */
+            --gold-glow: rgba(212, 175, 55, 0.6);
+            --neon-red: #ff3c00;
+            --red-glow: rgba(255, 60, 0, 0.5);
+            --text-main: #ffffff;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- ANTI-LAG & BOLD RESET --- */
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-weight: 900 !important; 
+            -webkit-font-smoothing: antialiased;
+            transform: translateZ(0); 
+        }
+
+        body {
+            background-color: var(--bg-body);
+            background-image: radial-gradient(circle at 50% 50%, #1e1e1e 0%, #0f0f0f 100%);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- BINGKAI LUAR KEDAP KEDIP GOLD --- */
+        .dashboard-card {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 3px solid var(--neon-gold);
+            border-radius: 30px;
+            padding: 45px;
+            position: relative;
+            animation: goldBlink 2.5s infinite alternate;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+        }
+
+        @keyframes goldBlink {
+            0% { border-color: rgba(212, 175, 55, 0.2); box-shadow: 0 0 10px rgba(212, 175, 55, 0.1); }
+            100% { border-color: var(--neon-gold); box-shadow: 0 0 40px var(--gold-glow); }
+        }
+
+        /* --- LETTER BY LETTER FLICKER TITLE --- */
+        @keyframes charFlicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: 1; text-shadow: 0 0 10px var(--gold-glow), 0 0 20px var(--neon-gold);
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                opacity: 0.4; text-shadow: none;
+            }
+        }
+
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            color: var(--neon-gold);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        .header h1 span {
+            display: inline-block;
+            animation: charFlicker 5s infinite;
+        }
+
+        /* Delay acak untuk efek kedap-kedip per huruf (USDT RATE GENERATOR) */
+        .header h1 span:nth-child(1) { animation-delay: 0.1s; }
+        .header h1 span:nth-child(2) { animation-delay: 0.5s; }
+        .header h1 span:nth-child(3) { animation-delay: 1.2s; }
+        .header h1 span:nth-child(4) { animation-delay: 0.8s; }
+        .header h1 span:nth-child(6) { animation-delay: 2.1s; }
+        .header h1 span:nth-child(7) { animation-delay: 0.3s; }
+        .header h1 span:nth-child(8) { animation-delay: 1.5s; }
+        .header h1 span:nth-child(9) { animation-delay: 0.7s; }
+        .header h1 span:nth-child(11) { animation-delay: 1.1s; }
+        .header h1 span:nth-child(12) { animation-delay: 1.8s; }
+        .header h1 span:nth-child(13) { animation-delay: 0.4s; }
+        .header h1 span:nth-child(14) { animation-delay: 1.3s; }
+
+        .inner-section {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            color: var(--neon-gold);
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px var(--gold-glow);
+        }
+
+        textarea, input {
+            width: 100%;
+            background: #000;
+            border: 2px solid #333;
+            border-radius: 12px;
+            color: #fff;
+            padding: 15px;
+            font-family: 'Rajdhani', sans-serif;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        textarea:focus, input:focus {
+            border-color: var(--neon-gold);
+            box-shadow: 0 0 15px var(--gold-glow);
+        }
+
+        /* UKURAN TEXTAREA */
+        textarea#rawInput {
+            height: 160px; 
+            font-size: 16px;
+            line-height: 1.6;
+            border-left: 5px solid var(--neon-gold);
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+
+        /* --- CONTAINER SCAN GOLD --- */
+        .scan-container { position: relative; overflow: hidden; border-radius: 12px; }
+        
+        .scan-line {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--neon-gold);
+            box-shadow: 0 0 25px var(--neon-gold);
+            z-index: 10;
+        }
+
+        .scan-text-overlay {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            color: var(--neon-gold);
+            text-shadow: 0 0 20px var(--neon-gold);
+            z-index: 11;
+            letter-spacing: 5px;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .scanning .scan-line { display: block; animation: scanAction 1.2s linear infinite; }
+        .scanning .scan-text-overlay { display: block; animation: blinkText 0.5s infinite alternate; }
+        .scanning textarea { opacity: 0.2; }
+
+        @keyframes scanAction { 0% { top: 0; } 100% { top: 100%; } }
+        @keyframes blinkText { from { opacity: 0.4; } to { opacity: 1; } }
+
+        .btn-group { display: flex; gap: 20px; margin-bottom: 30px; }
+        button {
+            flex: 1; padding: 20px; border-radius: 15px; border: none;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
+            font-size: 15px;
+            transition: var(--transition);
+        }
+
+        .btn-generate { 
+            background: var(--neon-gold); 
+            color: #000; 
+            box-shadow: 0 0 20px var(--gold-glow); 
+        }
+        .btn-generate:hover { transform: scale(1.02); box-shadow: 0 0 35px var(--neon-gold); filter: brightness(1.2); }
+        
+        .btn-reset { 
+            background: transparent; 
+            color: var(--neon-red); 
+            border: 2px solid var(--neon-red); 
+        }
+        .btn-reset:hover { background: var(--neon-red); color: white; box-shadow: 0 0 20px var(--red-glow); }
+
+        .footer-credit {
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            letter-spacing: 3px;
+            color: var(--neon-gold);
+            text-shadow: 0 0 10px var(--gold-glow);
+            padding: 20px;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            text-transform: uppercase;
+        }
+
+        #toast {
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
+            background: var(--neon-gold); color: #000; padding: 15px 40px;
+            border-radius: 50px; display: none;
+            box-shadow: 0 0 30px var(--neon-gold); z-index: 1000;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-gold); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-card">
+        <div class="header">
+            <h1>
+                <span>U</span><span>S</span><span>D</span><span>T</span> &nbsp;
+                <span>R</span><span>A</span><span>T</span><span>E</span> &nbsp;
+                <span>G</span><span>E</span><span>N</span><span>E</span><span>R</span><span>A</span><span>T</span><span>O</span><span>R</span>
+            </h1>
+        </div>
+
+        <div class="inner-section">
+            <label>📡 ANALYZE DATA CORE (PASTE RAW REPORT)</label>
+            <div class="scan-container" id="scanWrapper">
+                <div class="scan-line"></div>
+                <div class="scan-text-overlay">WUKONG SCANNING...</div>
+                <textarea id="rawInput" placeholder="PASTE DATA RAW REPORT DISINI UNTUK SCAN OTOMATIS..." oninput="autoFillData()"></textarea>
+            </div>
+        </div>
+
+        <div class="inner-section">
+            <div class="grid-2">
+                <div class="input-box">
+                    <label>RATIO DEPOSIT</label>
+                    <input type="text" id="depoRatio" placeholder="16854">
+                </div>
+                <div class="input-box">
+                    <label>RATIO WITHDRAW</label>
+                    <input type="text" id="wdRatio" placeholder="17024">
+                </div>
+            </div>
+
+            <div class="input-box" style="margin-bottom: 25px;">
+                <label>TIMESTAMP UPDATE</label>
+                <input type="text" id="manualTime">
+            </div>
+
+            <div class="grid-2">
+                <div class="input-box">
+                    <label>LAMPIRAN URL 1</label>
+                    <input type="text" id="link1" placeholder="HTTPS://...">
+                </div>
+                <div class="input-box">
+                    <label>LAMPIRAN URL 2</label>
+                    <input type="text" id="link2" placeholder="HTTPS://...">
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-generate" onclick="generateAndCopy()">GENERATE & AUTO COPY</button>
+            <button class="btn-reset" onclick="resetForm()">RESET SYSTEM</button>
+        </div>
+
+        <div class="footer-credit">
+            Official System Security • Created by Wukong
+        </div>
+    </div>
+
+    <div id="toast">SYSTEM: REPORT COPIED!</div>
+
+    <script>
+        function formatWithComma(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function autoFillData() {
+            const rawText = document.getElementById('rawInput').value;
+            const depoMatch = rawText.match(/Deposit\s*[:]\s*([\d,.]+)/i);
+            const wdMatch = rawText.match(/Withdraw\s*[:]\s*([\d,.]+)/i);
+            
+            if (depoMatch) {
+                document.getElementById('depoRatio').value = depoMatch[1].replace(/[,.]/g, '');
+            }
+            if (wdMatch) {
+                document.getElementById('wdRatio').value = wdMatch[1].replace(/[,.]/g, '');
+            }
+        }
+
+        window.onload = function() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById('manualTime').value = (hours < 10 ? '0' + hours : hours) + ':' + minutes + ' ' + ampm;
+        };
+
+        function generateAndCopy() {
+            const wrapper = document.getElementById('scanWrapper');
+            const depoRaw = document.getElementById('depoRatio').value;
+            const wdRaw = document.getElementById('wdRatio').value;
+
+            if (!depoRaw || !wdRaw) { alert("ERROR: ISI DATA TERLEBIH DAHULU!"); return; }
+
+            wrapper.classList.add('scanning');
+
+            setTimeout(() => {
+                const time = document.getElementById('manualTime').value;
+                const l1 = document.getElementById('link1').value || '-';
+                const l2 = document.getElementById('link2').value || '-';
+                const d = new Date();
+                const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+                const fullDate = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+
+                const finalDepo = formatWithComma(depoRaw.replace(/[,.]/g, ''));
+                const finalWd = formatWithComma(wdRaw.replace(/[,.]/g, ''));
+
+                const report = `RATE SEKARANG\nUsdt Ratio Deposit : ${finalDepo}\nUsdt Ratio Withdraw : ${finalWd}\nUPDATE : ${fullDate} (${time})\nLampiran :\n${l1}\n${l2}`;
+
+                navigator.clipboard.writeText(report).then(() => {
+                    wrapper.classList.remove('scanning');
+                    const toast = document.getElementById("toast");
+                    toast.style.display = "block";
+                    setTimeout(() => { toast.style.display = "none"; }, 2000);
+                });
+
+            }, 1200);
+        }
+
+        function resetForm() { location.reload(); }
+    </script>
+</body>
+</html>

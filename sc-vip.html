@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shortcut Selisih QRIS VIP - Golden Luxury</title>
+    
+    <!-- Library Eksternal -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            /* THEME GOLDEN LUXURY */
+            --bg-dark: #0a0a0a;
+            --card-bg: #141414;
+            --gold-primary: #d4af37;
+            --gold-light: #f9e29c;
+            --gold-dark: #aa8439;
+            --gold-glow: rgba(212, 175, 55, 0.4);
+            --border-glow: rgba(212, 175, 55, 0.2);
+            --glass: rgba(255, 255, 255, 0.02);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #d1d5db;
+            font-family: 'Rajdhani', sans-serif;
+            padding: 20px;
+            background-image: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+        }
+
+        /* --- NEON FLICKER ANIMATION --- */
+        .flicker-char {
+            display: inline-block;
+            animation: neonFlicker 3s linear infinite;
+        }
+
+        @keyframes neonFlicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 10px var(--gold-primary), 0 0 20px var(--gold-dark);
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                opacity: 0.3;
+                text-shadow: none;
+            }
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--gold-primary);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        textarea {
+            background: rgba(0, 0, 0, 0.5) !important;
+            border: 1px solid var(--border-glow) !important;
+            color: #fff !important;
+            width: 100%;
+            border-radius: 12px;
+            padding: 15px;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .btn-cyan {
+            background: transparent;
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-primary);
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-cyan:hover {
+            background: var(--gold-primary);
+            color: #000;
+            box-shadow: 0 0 20px var(--gold-glow);
+            transform: translateY(-2px);
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-glow);
+            text-align: center;
+        }
+
+        .stat-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            margin: 5px 0;
+        }
+
+        /* --- TABLE STYLING --- */
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 450px;
+            border-radius: 12px;
+            border: 1px solid var(--border-glow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            table-layout: fixed;
+        }
+
+        th {
+            background: #0d0d0d;
+            color: var(--gold-primary);
+            padding: 12px 8px;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--gold-dark);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 10px 8px;
+            border-bottom: 1px solid var(--border-glow);
+            color: #fff;
+            word-wrap: break-word;
+            vertical-align: middle;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        th:nth-child(1), td:nth-child(1) { width: 130px; } 
+        th:nth-child(2), td:nth-child(2) { width: 110px; }
+        th:nth-child(5), td:nth-child(5) { width: 90px; }
+        th:nth-child(10), td:nth-child(10) { width: 110px; }
+
+        tr:hover td { color: var(--gold-light); background: rgba(212, 175, 55, 0.03); }
+
+        #toast {
+            position: fixed; top: 20px; right: 20px; background: var(--gold-primary);
+            color: #000; padding: 12px 25px; border-radius: 10px; font-weight: 700;
+            display: none; z-index: 9999; box-shadow: 0 0 30px var(--gold-glow);
+        }
+
+        .selisih-item {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid transparent;
+            transition: 0.3s;
+            text-align: center;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .result-card.minimized .table-wrapper, .result-card.minimized .footer-btns { display: none; }
+        .minimize-btn { color: var(--gold-primary); cursor: pointer; font-size: 18px; }
+    </style>
+</head>
+<body>
+
+    <div id="toast">Berhasil!</div>
+
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-10 mt-5">
+            <!-- JUDUL DENGAN EFEK FLICKER -->
+            <h1 id="main-title" class="text-3xl font-bold flex items-center justify-center gap-4 text-white uppercase tracking-widest">
+                VIP Settlement Analysis
+            </h1>
+        </header>
+
+        <!-- INPUT SECTION -->
+        <div class="glass-card">
+            <div class="section-title"><i class="fas fa-terminal"></i> Data Input</div>
+            <textarea id="rawData" rows="5" placeholder="Paste data semicolon-separated (;) here..."></textarea>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <button id="convertBtn" class="btn-cyan"><i class="fas fa-bolt"></i> Process Data</button>
+                <button id="uploadExcelBtn" class="btn-cyan"><i class="fas fa-file-import"></i> Import Excel</button>
+                <input type="file" id="excelFileInput" class="hidden" accept=".xlsx, .xls, .csv">
+                <button id="clearBtn" class="btn-cyan"><i class="fas fa-trash-alt"></i> Clear</button>
+            </div>
+        </div>
+
+        <!-- STATS GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="stat-card" style="border-color: var(--gold-primary);">
+                <div class="section-title justify-center mb-2"><i class="fas fa-check-double"></i> Success</div>
+                <div id="successCount" class="stat-val" style="color: var(--gold-primary);">0</div>
+            </div>
+
+            <div class="stat-card" style="border-color: var(--gold-primary);">
+                <div class="section-title justify-center mb-2" style="color: var(--gold-primary);"><i class="fas fa-exclamation-triangle"></i> Not Process</div>
+                <div id="notProcessCount" class="stat-val" style="color: var(--gold-primary);">0</div>
+            </div>
+
+            <div class="stat-card" style="border-color: var(--gold-primary);">
+                <div class="section-title justify-center mb-2"><i class="fas fa-coins"></i> Total Amount</div>
+                <div id="totalAmount" class="stat-val" style="color: var(--gold-primary);">0</div>
+            </div>
+        </div>
+
+        <!-- TABLE SECTION -->
+        <div class="glass-card result-card" id="resultCard">
+            <div class="flex justify-between items-center mb-6">
+                <div class="section-title mb-0"><i class="fas fa-database"></i> Not Processed Records</div>
+                <i id="minimizeToggle" class="fas fa-compress-alt minimize-btn"></i>
+            </div>
+            
+            <div id="tableContainer" class="table-wrapper">
+                <p class="text-center py-16 text-slate-600 italic text-sm">Waiting for data processing...</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 footer-btns">
+                <button id="copyBtn" class="btn-cyan"><i class="fas fa-copy"></i> Copy Table</button>
+                <button id="exportBtn" class="btn-cyan"><i class="fas fa-file-excel"></i> Export Excel</button>
+                <button id="copyAmountBtn" class="btn-cyan"><i class="fas fa-money-bill"></i> Copy Amount</button>
+            </div>
+        </div>
+
+        <!-- SELISIH LIST -->
+        <div class="glass-card" id="selisihSection">
+            <div class="section-title"><i class="fas fa-clipboard-list"></i> Reconcile Data</div>
+            <div id="selisihList" class="max-h-56 overflow-y-auto mb-6">
+                <p class="text-center py-10 text-slate-700 italic text-sm">Details appear here</p>
+            </div>
+            <button id="copySelisihBtn" class="btn-cyan w-full"><i class="fas fa-copy"></i> Copy All Reconcile Data</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- FUNGSI NEON FLICKER ---
+            function applyNeonFlicker(elementId) {
+                const el = document.getElementById(elementId);
+                const text = el.innerText;
+                el.innerHTML = '';
+                text.split('').forEach(char => {
+                    const span = document.createElement('span');
+                    if (char === ' ') {
+                        span.innerHTML = '&nbsp;';
+                    } else {
+                        span.innerText = char;
+                    }
+                    span.className = 'flicker-char';
+                    span.style.animationDelay = (Math.random() * 5) + 's';
+                    el.appendChild(span);
+                });
+            }
+            applyNeonFlicker('main-title');
+
+            // --- ALGORITMA TETAP SAMA ---
+            const rawDataTextarea = document.getElementById('rawData');
+            const convertBtn = document.getElementById('convertBtn');
+            const uploadExcelBtn = document.getElementById('uploadExcelBtn');
+            const excelFileInput = document.getElementById('excelFileInput');
+            const clearBtn = document.getElementById('clearBtn');
+            const tableContainer = document.getElementById('tableContainer');
+            const successCount = document.getElementById('successCount');
+            const notProcessCount = document.getElementById('notProcessCount');
+            const totalAmount = document.getElementById('totalAmount');
+            const copyBtn = document.getElementById('copyBtn');
+            const exportBtn = document.getElementById('exportBtn');
+            const copyAmountBtn = document.getElementById('copyAmountBtn');
+            const copySelisihBtn = document.getElementById('copySelisihBtn');
+            const minimizeToggle = document.getElementById('minimizeToggle');
+            const resultCard = document.getElementById('resultCard');
+            const selisihList = document.getElementById('selisihList');
+
+            const targetHeaders = [
+                "Id Transaction Client", "Date", "Transaction Status", 
+                "Settlement Status", "Amount", "RRN", "Terminal ID", 
+                "Process Status", "Process note", "Process by"
+            ];
+
+            let tableDataOnlyNotProcess = []; 
+            let totalAmountValue = 0;
+            let selisihData = [];
+
+            function showToast(message) {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.style.display = 'block';
+                setTimeout(() => { toast.style.display = 'none'; }, 2500);
+            }
+
+            function findValue(obj, keys) {
+                for (const key in obj) {
+                    const normalizedKey = key.toLowerCase().replace(/\s/g, '');
+                    if (keys.includes(normalizedKey)) return obj[key];
+                }
+                return undefined;
+            }
+
+            function processData(rows) {
+                if (rows.length < 2) return showToast("Invalid Data Format!");
+                const headers = rows[0].map(h => h.trim());
+                const dataRows = rows.slice(1);
+                
+                tableDataOnlyNotProcess = []; 
+                selisihData = [];
+                let successTransactions = 0;
+                totalAmountValue = 0;
+
+                const allParsedData = dataRows.map(row => {
+                    let obj = {};
+                    headers.forEach((header, index) => {
+                        obj[header] = row[index] !== undefined ? row[index] : '';
+                    });
+                    return obj;
+                });
+
+                allParsedData.forEach(item => {
+                    const status = findValue(item, ['status', 'transactionstatus']);
+                    const processStatus = findValue(item, ['processstatus']);
+                    const nominal = parseFloat(findValue(item, ['amount', 'nominal'])) || 0;
+                    const terminalId = findValue(item, ['terminalid', 'userid']);
+                    const rrn = findValue(item, ['rrn', 'referencenumber']);
+
+                    if (status === "Success" && processStatus === "Process") {
+                        successTransactions++;
+                        totalAmountValue += nominal;
+                    } else {
+                        tableDataOnlyNotProcess.push(item);
+                        selisihData.push({ terminalId, rrn, nominal });
+                    }
+                });
+
+                successCount.textContent = successTransactions.toLocaleString('id-ID');
+                notProcessCount.textContent = selisihData.length.toLocaleString('id-ID');
+                totalAmount.textContent = totalAmountValue.toLocaleString('id-ID');
+
+                renderTable(tableDataOnlyNotProcess);
+                renderSelisih();
+                showToast("Data Processed!");
+            }
+
+            function renderTable(dataToRender) {
+                if (dataToRender.length === 0) {
+                    tableContainer.innerHTML = '<div class="py-16 text-center text-yellow-500 font-bold">ALL TRANSACTIONS SUCCESS</div>';
+                    return;
+                }
+
+                let html = '<table><thead><tr>';
+                targetHeaders.forEach(h => { html += `<th>${h}</th>`; });
+                html += '</tr></thead><tbody>';
+
+                dataToRender.forEach(row => {
+                    html += '<tr>';
+                    targetHeaders.forEach(th => {
+                        let val = findValue(row, [th.toLowerCase().replace(/\s/g, '')]) || '-';
+                        if (th === "Amount") {
+                            val = 'Rp ' + (parseFloat(val) || 0).toLocaleString('id-ID');
+                        }
+                        html += `<td>${val}</td>`;
+                    });
+                    html += '</tr>';
+                });
+                html += '</tbody></table>';
+                tableContainer.innerHTML = html;
+            }
+
+            function renderSelisih() {
+                if (selisihData.length === 0) {
+                    selisihList.innerHTML = '<p class="text-center py-10 text-slate-700 italic">No discrepancy.</p>';
+                    return;
+                }
+                let html = '';
+                selisihData.forEach(item => {
+                    html += `<div class="selisih-item">
+                        <span>ID: ${item.terminalId}</span>
+                        <span>RRN: ${item.rrn}</span>
+                        <span style="color: var(--gold-primary);">Rp ${item.nominal.toLocaleString('id-ID')}</span>
+                    </div>`;
+                });
+                selisihList.innerHTML = html;
+            }
+
+            convertBtn.addEventListener('click', () => {
+                const text = rawDataTextarea.value.trim();
+                if (!text) return;
+                const rows = text.split('\n').map(line => line.split(';'));
+                processData(rows);
+            });
+
+            uploadExcelBtn.addEventListener('click', () => excelFileInput.click());
+            excelFileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    const data = new Uint8Array(evt.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+                    processData(jsonData);
+                };
+                reader.readAsArrayBuffer(file);
+            });
+
+            clearBtn.addEventListener('click', () => {
+                rawDataTextarea.value = '';
+                tableContainer.innerHTML = '<p class="text-center py-16 text-slate-600 italic text-sm">Waiting for data processing...</p>';
+                successCount.textContent = '0';
+                notProcessCount.textContent = '0';
+                totalAmount.textContent = '0';
+                tableDataOnlyNotProcess = [];
+                selisihData = [];
+                totalAmountValue = 0;
+            });
+
+            minimizeToggle.addEventListener('click', () => {
+                resultCard.classList.toggle('minimized');
+                minimizeToggle.className = resultCard.classList.contains('minimized') ? 'fas fa-expand-alt minimize-btn' : 'fas fa-compress-alt minimize-btn';
+            });
+
+            copyAmountBtn.addEventListener('click', () => {
+                if (totalAmountValue === 0) return;
+                navigator.clipboard.writeText(totalAmountValue.toString());
+                showToast("Amount Copied!");
+            });
+
+            copySelisihBtn.addEventListener('click', () => {
+                if (selisihData.length === 0) return;
+                let text = "Terminal ID\tRRN\tNominal\n";
+                selisihData.forEach(i => { text += `${i.terminalId}\t${i.rrn}\t${i.nominal}\n`; });
+                navigator.clipboard.writeText(text);
+                showToast("Reconcile Data Copied!");
+            });
+
+            copyBtn.addEventListener('click', () => {
+                const table = tableContainer.querySelector('table');
+                if (!table) return;
+                const rows = Array.from(table.rows);
+                const text = rows.map(r => Array.from(r.cells).map(c => c.innerText).join('\t')).join('\n');
+                navigator.clipboard.writeText(text);
+                showToast("Table Data Copied!");
+            });
+
+            exportBtn.addEventListener('click', () => {
+                if (tableDataOnlyNotProcess.length === 0) return;
+                const ws = XLSX.utils.json_to_sheet(tableDataOnlyNotProcess);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Not_Processed");
+                XLSX.writeFile(wb, "Report_Not_Processed.xlsx");
+            });
+        });
+    </script>
+</body>
+</html>

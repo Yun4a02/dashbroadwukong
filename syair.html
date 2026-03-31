@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Syair Pedoman V26 - Pro Emerald Edition</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,700;1,700&family=Archivo+Black&family=Inter:wght@400;700;900&display=swap');
+
+        :root {
+            --dark-green: #043927;      
+            --emerald: #10b981;         
+            --soft-mint: #e6fffa;       
+            --border-line: #1a1a1a;     
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #020617;
+            font-family: 'Inter', sans-serif;
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .outer-wrapper {
+            position: relative;
+            padding: 15px;
+            background: var(--dark-green);
+            border-radius: 8px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+        }
+
+        #frame-syair {
+            width: 850px;
+            height: 580px;
+            background-color: var(--soft-mint);
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            border: 10px solid var(--dark-green);
+            outline: 2px solid var(--emerald);
+            outline-offset: -5px;
+        }
+
+        .inner-container {
+            border: 2px solid var(--border-line);
+            margin: 8px;
+            height: calc(100% - 16px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: grid;
+            grid-template-columns: 180px 1fr 180px;
+            border-bottom: 2px solid var(--border-line);
+            height: 85px;
+        }
+        .header-cell { height: 100%; display: flex; align-items: center; justify-content: center; border-right: 2px solid var(--border-line); padding: 5px; }
+        .header-cell:last-child { border-right: none; }
+        .logo-img { max-height: 50px; max-width: 90%; object-fit: contain; }
+        .header-title { font-family: 'Archivo Black', sans-serif; font-size: 32px; color: #065f46; letter-spacing: 1px; }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: 180px 1fr 220px;
+            border-bottom: 2px solid var(--border-line);
+            height: 55px;
+        }
+        
+        .box-bb2d { 
+            background: #1a1a1a; 
+            color: var(--emerald); 
+            font-weight: 900; font-size: 30px; 
+            display: flex; align-items: center; justify-content: center; 
+            border-right: 2px solid var(--border-line); 
+        }
+
+        .date-val { font-size: 19px; font-weight: 900; display: flex; align-items: center; justify-content: center; text-transform: uppercase; color: #1a1a1a; }
+        
+        .top-right-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-left: 2px solid var(--border-line); background: var(--soft-mint); }
+        .top-right-grid div { display: flex; align-items: center; justify-content: center; font-size: 38px; font-weight: 900; color: var(--emerald); border-right: 2px solid var(--border-line); }
+        .top-right-grid div:last-child { border-right: none; }
+
+        .main-grid { display: grid; grid-template-columns: 180px 1fr 220px; flex-grow: 1; }
+        
+        .col-2d { border-right: 2px solid var(--border-line); display: flex; flex-direction: column; }
+        .col-2d div { flex: 1; border-bottom: 2px solid var(--border-line); font-size: 50px; font-weight: 900; display: flex; align-items: center; justify-content: center; color: #1a1a1a; }
+        .col-2d div:last-child { border-bottom: none; }
+
+        .col-center { display: flex; flex-direction: column; align-items: center; justify-content: space-around; padding: 15px 0; }
+        .compass-box { position: relative; width: 120px; height: 120px; }
+        .compass-img { width: 100%; height: 100%; background: url('https://files.catbox.moe/igscbv.png') center/contain no-repeat; opacity: 0.8; filter: grayscale(1); }
+        .c-val { position: absolute; font-size: 30px; font-weight: 900; color: #1a1a1a; }
+        .n { top: -25px; left: 50%; transform: translateX(-50%); }
+        .s { bottom: -25px; left: 50%; transform: translateX(-50%); }
+        .w { left: -35px; top: 50%; transform: translateY(-50%); }
+        .e { right: -35px; top: 50%; transform: translateY(-50%); }
+
+        .poem-box {
+            width: 85%; height: 110px; border: 2px dashed var(--dark-green); border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; padding: 10px;
+            background: rgba(255, 255, 255, 0.4);
+        }
+        .poem-text { font-family: 'Crimson Text', serif; font-size: 18px; font-weight: 700; font-style: italic; text-align: center; color: #1a1a1a; line-height: 1.2; }
+
+        .col-right { border-left: 2px solid var(--border-line); display: flex; flex-direction: column; }
+        .bbfs-section { display: flex; height: 120px; border-bottom: 2px solid var(--border-line); }
+        .bbfs-label { background: #1a1a1a; color: var(--emerald); writing-mode: vertical-lr; transform: rotate(180deg); display: flex; align-items: center; justify-content: center; font-weight: 900; padding: 4px; font-size: 13px; border-right: 2px solid var(--border-line); height: 100%; width: 35px; }
+        .bbfs-vals { flex: 1; display: flex; flex-direction: column; }
+        .bbfs-digit-top { flex: 1; background: var(--soft-mint); color: var(--emerald); display: flex; align-items: center; justify-content: center; font-size: 45px; font-weight: 900; border-bottom: 2px solid var(--border-line); }
+        .bbfs-digit-bottom { flex: 1; background: var(--soft-mint); color: var(--emerald); display: flex; align-items: center; justify-content: center; font-size: 45px; font-weight: 900; }
+
+        .shio-area { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--soft-mint); }
+        .shio-circle { width: 120px; height: 120px; border: 2px solid var(--dark-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #fff; }
+        .shio-circle img { width: 85%; object-fit: contain; }
+        .shio-name-label { font-weight: 900; font-size: 22px; color: var(--emerald); margin-top: 5px; letter-spacing: 2px; }
+
+        .footer { border-top: 2px solid var(--border-line); background: #1a1a1a; }
+        .foot-row-1 { display: grid; grid-template-columns: 180px 1fr 220px 1fr; border-bottom: 1px solid #333; height: 42px; }
+        .f-label { display: flex; align-items: center; justify-content: center; font-weight: 900; border-right: 2px solid var(--border-line); font-size: 16px; color: var(--emerald); }
+        .f-val { display: flex; align-items: center; justify-content: center; font-weight: 900; border-right: 2px solid var(--border-line); font-size: 18px; color: var(--emerald); }
+        .f-val:last-child { border-right: none; }
+
+        .foot-row-2 { display: grid; grid-template-columns: 180px repeat(3, 1fr); height: 50px; }
+        .foot-top4d-label { background: #1a1a1a; color: var(--emerald); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; border-right: 2px solid var(--border-line); }
+        .foot-4d-val { border-right: 2px solid var(--border-line); display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900; color: var(--emerald); }
+        .foot-4d-val:last-child { border-right: none; }
+
+        .admin-panel { margin-top: 30px; background: #1e293b; width: 850px; padding: 20px; border-radius: 12px; display: grid; gap: 15px; border: 1px solid #334155; color: white; }
+        .input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        input, textarea { background: #0f172a; border: 1px solid #334155; padding: 10px; border-radius: 6px; color: #fff; font-family: inherit; }
+        .btn-group { display: flex; gap: 10px; }
+        .btn { flex: 1; padding: 12px; font-size: 14px; font-weight: 700; border: none; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
+        .btn-gen { background: var(--emerald); color: #fff; }
+        .btn-save { background: #fbbf24; color: #000; }
+        .watermark { margin-top: 15px; font-size: 14px; color: #475569; letter-spacing: 2px; }
+    </style>
+</head>
+<body>
+
+    <div class="outer-wrapper">
+        <div id="frame-syair">
+            <div class="inner-container">
+                <div class="header">
+                    <div class="header-cell"><img id="view-logo-market" class="logo-img" src=""></div>
+                    <div class="header-cell"><div class="header-title">SYAIR PEDOMAN</div></div>
+                    <div class="header-cell"><img class="logo-img" src="https://files.catbox.moe/70x8f3.png"></div>
+                </div>
+
+                <div class="info-row">
+                    <div class="box-bb2d">BB 2D</div>
+                    <div class="date-val" id="view-date">MEMUAT...</div>
+                    <div class="top-right-grid">
+                        <div id="vt-1">0</div><div id="vt-2">0</div><div id="vt-3">0</div>
+                    </div>
+                </div>
+
+                <div class="main-grid">
+                    <div class="col-2d">
+                        <div id="v2d-1">00</div><div id="v2d-2">00</div><div id="v2d-3">00</div><div id="v2d-4">00</div>
+                    </div>
+
+                    <div class="col-center">
+                        <div class="compass-box">
+                            <div class="compass-img"></div>
+                            <div class="c-val n" id="vc-n">0</div>
+                            <div class="c-val w" id="vc-w">0</div>
+                            <div class="c-val e" id="vc-e">0</div>
+                            <div class="c-val s" id="vc-s">0</div>
+                        </div>
+                        <div class="poem-box">
+                            <div class="poem-text" id="view-poem">Klik Update...</div>
+                        </div>
+                    </div>
+
+                    <div class="col-right">
+                        <div class="bbfs-section">
+                            <div class="bbfs-label">BBFS</div>
+                            <div class="bbfs-vals">
+                                <div id="v-bbfs-4" class="bbfs-digit-top">0</div>
+                                <div id="v-bbfs-5" class="bbfs-digit-bottom">0</div>
+                            </div>
+                        </div>
+                        <div class="shio-area">
+                            <div class="shio-circle"><img id="view-shio-img" src=""></div>
+                            <div class="shio-name-label" id="view-shio-name-short">SHIO</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <div class="foot-row-1">
+                        <div class="f-label">SHIO</div>
+                        <div id="view-shio-name" class="f-val">...</div>
+                        <div class="f-label">COLOK BEBAS</div>
+                        <div id="view-colok" class="f-val">0,0</div>
+                    </div>
+                    <div class="foot-row-2">
+                        <div class="foot-top4d-label">TOP 4D :</div>
+                        <div id="v4d-1" class="foot-4d-val">0000</div>
+                        <div id="v4d-2" class="foot-4d-val">0000</div>
+                        <div id="v4d-3" class="foot-4d-val">0000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-panel">
+        <div class="input-group">
+            <input type="text" id="in-date" value="SABTU, 14 MARET 2026" oninput="syncNow()">
+            <textarea id="in-poem" rows="2" oninput="syncNow()"></textarea>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-gen" onclick="generateAll()">Update Angka & Logo</button>
+            <button class="btn btn-save" onclick="saveJPG()">Simpan Gambar HD</button>
+        </div>
+    </div>
+
+    <div class="watermark">Official System Security • by Wukong</div>
+
+    <script>
+        const logos = ["https://files.catbox.moe/lv1l77.png","https://files.catbox.moe/vjwq6t.png","https://files.catbox.moe/bhv2em.png","https://files.catbox.moe/07c6tw.png","https://files.catbox.moe/xk5e6i.png"];
+        
+        const bankSyair = {
+            "TIKUS": [
+                "Mencari makan di lobang gelap,\nHati-hati jangan sampai terlelap.",
+                "Si cerdik lari ke sana kemari,\nAngka jitu ada di saku kiri.",
+                "Pengerat kecil bermata tajam,\nNomor keluar di waktu malam.",
+                "Lincah melompat ke atas meja,\nKeberuntungan datang sekejap saja.",
+                "Tikus menari di balik lemari,\nHoki besar sudah menanti."
+            ],
+            "KERBAU": [
+                "Tenaga kuat membajak sawah,\nRejeki datang takkan ke bawah.",
+                "Sabar berjalan di tanah basah,\nAngka jitu tak bikin susah.",
+                "Kerbau putih memandang bulan,\nJangan ragu tentukan jalan.",
+                "Membawa beban di atas pundak,\nHoki melimpah tiada mendadak.",
+                "Tanduk tajam menjaga diri,\nRejeki datang setiap hari."
+            ],
+            "HARIMAU": [
+                "Raja hutan mengaum keras,\nAngka melesat begitu deras.",
+                "Loreng tajam sorot matanya,\nTunggu saat keluar nomornya.",
+                "Langkah sunyi di tengah rimba,\nKejutan besar segera tiba.",
+                "Penguasa hutan sedang mengincar,\nNomor jitu takkan terpencar.",
+                "Kuku tajam siap menerjang,\nKemenangan datang tiada penghalang."
+            ],
+            "KELINCI": [
+                "Melompat jauh ke balik bukit,\nRejeki besar bukan sedikit.",
+                "Si telinga panjang suka berlari,\nCari nomor di pagi hari.",
+                "Sembunyi aman di lubang tanah,\nPasang jitu takkan pernah salah.",
+                "Makan wortel di kebun sayur,\nAngka keluar buatmu bersyukur.",
+                "Lincah bermain di bawah bulan,\nHoki datang jadi andalan."
+            ],
+            "NAGA": [
+                "Terbang tinggi di atas awan,\nBawa berkah bagi sang kawan.",
+                "Naga emas keluar dari sarang,\nNomor jitu kini sudah terang.",
+                "Nafas api membakar kegelapan,\nKeberhasilan jadi harapan.",
+                "Meliuk-liuk di angkasa raya,\nAngka hoki bikin kaya raya.",
+                "Sisik berkilau penuh misteri,\nJp paus setiap hari."
+            ],
+            "ULAR": [
+                "Meliuk-liuk di dalam semak,\nAngka keluar dipasang banyak.",
+                "Sisik dingin penuh misteri,\nCari untung di setiap hari.",
+                "Diam mengincar mangsa di dahan,\nPasang jitu tiada keraguan.",
+                "Ular melata di atas batu,\nAngka keluar tepat waktu.",
+                "Mata tajam melihat celah,\nNomor jitu takkan salah."
+            ],
+            "KUDA": [
+                "Berlari cepat mengejar angin,\nBawa nomor yang kau pengin.",
+                "Derap langkahnya terdengar kuat,\nPasang taruhan jangan terlambat.",
+                "Kuda perkasa melompati pagar,\nSemangat menang takkan pudar.",
+                "Meringkik keras di padang luas,\nHasil keluar sangat memuaskan.",
+                "Pelari tangguh pembawa berita,\nAngka hoki sudah di mata."
+            ],
+            "KAMBING": [
+                "Mencari rumput di lereng gunung,\nAngka keluar tak bikin bingung.",
+                "Kambing putih sedang menari,\nRejeki hoki sudah menanti.",
+                "Tanduk melengkung sangatlah indah,\nJalan menang terasa mudah.",
+                "Mengembik keras panggil temannya,\nTunggu nomor keluar angkanya.",
+                "Sabar menunggu di atas bukit,\nKeuntungan datang berbukit-bukit."
+            ],
+            "MONYET": [
+                "Si cerdik memanjat pohon,\nRejeki datang janganlah memohon.",
+                "Tertawa riang di atas dahan,\nPasang angka tanpa keraguan.",
+                "Lincah berayun di akar jati,\nAngka jitu menyejukkan hati.",
+                "Mencuri buah di kebun orang,\nNomor keluar jadi pemenang.",
+                "Akalnya banyak penuh siasat,\nPasang jitu takkan tersesat."
+            ],
+            "AYAM": [
+                "Berkokok kencang fajar tiba,\nKeberuntungan sudah tersedia.",
+                "Ayam jago sedang berkeliaran,\nCari nomor buat taruhan.",
+                "Taji tajam siap bertarung,\nKeuntungan datang menggunung.",
+                "Ceker tanah cari makanan,\nPasang jitu jadi andalan.",
+                "Sayap mengepak tanda kemenangan,\nAngka keluar dalam genggaman."
+            ],
+            "ANJING": [
+                "Setia menjaga di depan pintu,\nAngka jitu sudah menunggu.",
+                "Anjing menggonggong di tengah malam,\nNomor keluar di tempat yang dalam.",
+                "Berlari mengejar tuan tercinta,\nRejeki datang sesuai berita.",
+                "Mengendus jejak di tanah merah,\nHasil jitu bikin sumringah.",
+                "Sahabat setia pembawa hoki,\nPasang angka janganlah rugi."
+            ],
+            "BABI": [
+                "Makan kenyang tidur nyenyak,\nHarta datang sangatlah banyak.",
+                "Si gemuk pembawa keberuntungan,\nJangan ragu ambil keputusan.",
+                "Bermain lumpur di sore hari,\nAngka hoki sulit dicari.",
+                "Rejeki datang mengalir tenang,\nPasang nomor jadi pemenang.",
+                "Pipi tembem hidung bergetar,\nAngka keluar bikin gemetar."
+            ]
+        };
+
+        const shioData = [
+            { name: "ANJING", img: "https://files.catbox.moe/gqquw4.png" }, { name: "TIKUS", img: "https://files.catbox.moe/tfiwp1.png" },
+            { name: "KERBAU", img: "https://files.catbox.moe/ders0q.png" }, { name: "HARIMAU", img: "https://files.catbox.moe/wtq3xf.png" },
+            { name: "KELINCI", img: "https://files.catbox.moe/35jaus.png" }, { name: "NAGA", img: "https://files.catbox.moe/amhpxz.png" },
+            { name: "ULAR", img: "https://files.catbox.moe/lba60l.png" }, { name: "KUDA", img: "https://files.catbox.moe/jgpbzq.png" },
+            { name: "KAMBING", img: "https://files.catbox.moe/ijuvjj.png" }, { name: "MONYET", img: "https://files.catbox.moe/z6zawf.png" },
+            { name: "AYAM", img: "https://files.catbox.moe/8166tk.png" }, { name: "BABI", img: "https://files.catbox.moe/f53wi1.png" }
+        ];
+
+        function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+        function syncNow() {
+            document.getElementById('view-date').innerText = document.getElementById('in-date').value;
+            document.getElementById('view-poem').innerHTML = document.getElementById('in-poem').value.replace(/\n/g, '<br>');
+        }
+
+        function generateAll() {
+            // Logo & Tanggal
+            document.getElementById('view-logo-market').src = logos[Math.floor(Math.random() * logos.length)];
+            
+            // Angka-angka Acak
+            for(let i=1; i<=3; i++) document.getElementById('vt-'+i).innerText = rand(0, 9);
+            for(let i=1; i<=4; i++) document.getElementById('v2d-'+i).innerText = rand(10, 99);
+            document.getElementById('vc-n').innerText = rand(0, 9);
+            document.getElementById('vc-w').innerText = rand(0, 9);
+            document.getElementById('vc-e').innerText = rand(0, 9);
+            document.getElementById('vc-s').innerText = rand(0, 9);
+            document.getElementById('v-bbfs-4').innerText = rand(0, 9);
+            document.getElementById('v-bbfs-5').innerText = rand(0, 9);
+            
+            // Random Shio
+            const randomShioObj = shioData[Math.floor(Math.random() * shioData.length)];
+            document.getElementById('view-shio-img').src = randomShioObj.img;
+            document.getElementById('view-shio-name').innerText = randomShioObj.name;
+            document.getElementById('view-shio-name-short').innerText = randomShioObj.name;
+            
+            // Random Syair Berdasarkan Shio
+            const listSyair = bankSyair[randomShioObj.name];
+            const syairAcak = listSyair[Math.floor(Math.random() * listSyair.length)];
+            document.getElementById('in-poem').value = syairAcak;
+
+            // Footer Angka
+            document.getElementById('view-colok').innerText = rand(0,9) + "," + rand(0,9);
+            document.getElementById('v4d-1').innerText = rand(1000, 9999);
+            document.getElementById('v4d-2').innerText = rand(1000, 9999);
+            document.getElementById('v4d-3').innerText = rand(1000, 9999);
+            
+            syncNow();
+        }
+
+        function saveJPG() {
+            const frame = document.getElementById('frame-syair');
+            html2canvas(frame, { scale: 3, useCORS: true }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `Syair_Emerald_${Date.now()}.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.95);
+                link.click();
+            });
+        }
+        
+        window.onload = generateAll;
+    </script>
+</body>
+</html>

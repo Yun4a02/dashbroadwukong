@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportan Slot </title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Library untuk membaca Excel & CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #0f0f0f; /* Abu-abu Gelap */
+            --card-bg: #1a1a1a;
+            --neon-gold: #d4af37; /* Emas Metallic */
+            --gold-glow: rgba(212, 175, 55, 0.6);
+            --border-ui: rgba(212, 175, 55, 0.2);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --neon-red: #ff3c00;
+            --red-glow: rgba(255, 60, 0, 0.5);
+        }
+
+        /* --- CORE RESET & ANTI-LAG --- */
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-weight: 900 !important; 
+            -webkit-font-smoothing: antialiased;
+            transform: translateZ(0); 
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 50%, #1e1e1e 0%, #0f0f0f 100%);
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            padding: 50px 20px;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* --- LETTER BY LETTER FLICKER ANIMATION --- */
+        @keyframes charFlicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: 1; text-shadow: 0 0 10px var(--gold-glow), 0 0 20px var(--neon-gold);
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                opacity: 0.4; text-shadow: none;
+            }
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-gold);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin-bottom: 70px;
+            font-size: 28px;
+        }
+
+        h2 span {
+            display: inline-block;
+            animation: charFlicker 5s infinite;
+        }
+
+        /* Delay acak untuk efek kedap-kedip per huruf */
+        h2 span:nth-child(1) { animation-delay: 0.1s; }
+        h2 span:nth-child(3) { animation-delay: 0.5s; }
+        h2 span:nth-child(5) { animation-delay: 1.2s; }
+        h2 span:nth-child(7) { animation-delay: 0.8s; }
+        h2 span:nth-child(9) { animation-delay: 2.1s; }
+        h2 span:nth-child(11) { animation-delay: 0.3s; }
+        h2 span:nth-child(13) { animation-delay: 1.5s; }
+
+        /* --- GRID LAYOUT --- */
+        .report-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px 25px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-ui);
+            border-radius: 20px;
+            padding: 35px 25px 25px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            transition: var(--transition);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            border-color: var(--neon-gold);
+            box-shadow: 0 0 30px var(--gold-glow);
+        }
+
+        /* --- ANIMASI JUDUL MELAMBAI GOLD --- */
+        @keyframes floatWave {
+            0%, 100% { transform: translate(-50%, 0px); text-shadow: 0 0 10px var(--gold-glow); }
+            50% { transform: translate(-50%, -12px); text-shadow: 0 0 20px var(--neon-gold); }
+        }
+
+        .floating-title {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-dark); 
+            padding: 5px 25px;
+            color: var(--neon-gold);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 900;
+            text-transform: uppercase;
+            white-space: nowrap;
+            letter-spacing: 3px;
+            animation: floatWave 3s ease-in-out infinite;
+            z-index: 10;
+            border: 1px solid var(--neon-gold);
+            border-radius: 8px;
+        }
+
+        /* --- EXCEL/CSV SECTION --- */
+        .excel-section {
+            background: rgba(212, 175, 55, 0.08);
+            border: 2px solid var(--neon-gold);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .excel-btn {
+            background: var(--neon-gold);
+            color: #000;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            text-transform: uppercase;
+        }
+
+        .excel-btn:hover {
+            filter: brightness(1.2);
+            box-shadow: 0 0 20px var(--neon-gold);
+        }
+
+        /* --- FOLDER SECTION --- */
+        .folder-section {
+            background: rgba(212, 175, 55, 0.03);
+            border: 1px dashed var(--neon-gold);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .folder-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            color: var(--neon-gold);
+            letter-spacing: 1.5px;
+            font-weight: 900;
+        }
+
+        .folder-display {
+            font-size: 16px;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .btn-copy-folder {
+            background: transparent;
+            border: 1px solid var(--neon-gold);
+            color: var(--neon-gold);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 900;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn-copy-folder:hover {
+            background: var(--neon-gold);
+            color: #000;
+        }
+
+        /* --- INPUTS --- */
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 11px;
+            font-weight: 900;
+            color: var(--neon-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 16px;
+            outline: none;
+            border-left: 4px solid var(--neon-gold);
+        }
+
+        input:focus {
+            border-color: var(--neon-gold);
+            box-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        /* --- PREVIEW --- */
+        .preview-box {
+            background: #000;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 18px;
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+            color: #e0e6ed;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            min-height: 140px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .btn-copy-report {
+            width: 100%;
+            padding: 16px;
+            background: var(--neon-gold);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-copy-report:hover {
+            filter: brightness(1.2);
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        /* --- RESET BUTTON --- */
+        .reset-container {
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-reset {
+            background: transparent;
+            border: 2px solid var(--neon-red);
+            color: var(--neon-red);
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: var(--transition);
+        }
+
+        .btn-reset:hover {
+            background: var(--neon-red);
+            color: #fff;
+            box-shadow: 0 0 25px var(--red-glow);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--neon-gold);
+            color: #000;
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            display: none;
+            z-index: 10000;
+            box-shadow: 0 0 30px var(--gold-glow);
+        }
+
+        /* SCROLLBAR STYLE */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-gold); border-radius: 10px; }
+
+        @media (max-width: 850px) {
+            .report-grid { grid-template-columns: 1fr; gap: 60px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>
+        <span>🎰</span> &nbsp;
+        <span>R</span><span>E</span><span>P</span><span>O</span><span>R</span><span>T</span><span>A</span><span>N</span> &nbsp;
+        <span>S</span><span>L</span><span>O</span><span>T</span> &nbsp;
+        <span>D</span><span>A</span><span>S</span><span>H</span><span>B</span><span>O</span><span>A</span><span>R</span><span>D</span>
+    </h2>
+
+    <div class="report-grid">
+        
+        <!-- MENU 1: MAHJONG -->
+        <div class="card">
+            <div class="floating-title">Mahjong Ways 1 & 2</div>
+
+            <div class="excel-section">
+                <input type="file" id="excelInput1" accept=".xlsx, .xls, .csv" style="display: none;" onchange="handleExcel(this, 1)">
+                <button class="excel-btn" onclick="document.getElementById('excelInput1').click()">📁 UPLOAD FILE</button>
+            </div>
+
+            <div class="folder-section">
+                <div class="folder-label">FOLDER NAME (RENAME)</div>
+                <div class="folder-display" id="folderName1"></div>
+                <button class="btn-copy-folder" onclick="copyText('folderName1')">📋 COPY NAMA FOLDER</button>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Total All :</label>
+                    <input type="text" id="total1" placeholder="0" oninput="updateUI(1)">
+                </div>
+                <div class="input-group">
+                    <label>Total Nominal :</label>
+                    <input type="text" id="nominal1" placeholder="Nominal..." oninput="formatCurrency(this, 1)">
+                </div>
+            </div>
+
+            <div class="preview-box" id="preview1"></div>
+            <button class="btn-copy-report" onclick="copyText('preview1')">📋 COPY REPORT</button>
+        </div>
+
+        <!-- MENU 2: FREESPIN & BUYSPIN -->
+        <div class="card">
+            <div class="floating-title">FreeSpin & Buyspin</div>
+
+            <div class="excel-section">
+                <input type="file" id="excelInput2" accept=".xlsx, .xls, .csv" style="display: none;" onchange="handleExcel(this, 2)">
+                <button class="excel-btn" onclick="document.getElementById('excelInput2').click()">📁 UPLOAD FILE</button>
+            </div>
+
+            <div class="folder-section">
+                <div class="folder-label">FOLDER NAME (RENAME)</div>
+                <div class="folder-display" id="folderName2"></div>
+                <button class="btn-copy-folder" onclick="copyText('folderName2')">📋 COPY NAMA FOLDER</button>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Total All :</label>
+                    <input type="text" id="total2" placeholder="0" oninput="updateUI(2)">
+                </div>
+                <div class="input-group">
+                    <label>Total Nominal :</label>
+                    <input type="text" id="nominal2" placeholder="Nominal..." oninput="formatCurrency(this, 2)">
+                </div>
+            </div>
+
+            <div class="preview-box" id="preview2"></div>
+            <button class="btn-copy-report" onclick="copyText('preview2')">📋 COPY REPORT</button>
+        </div>
+
+    </div>
+
+    <div class="reset-container">
+        <button class="btn-reset" onclick="resetAllData()">🔄 RESET SYSTEM</button>
+    </div>
+</div>
+
+<div id="toast" class="toast">BERHASIL DISALIN!</div>
+
+<script>
+    const titles = {
+        1: "Bonus scatter mahjong ways 1 & 2",
+        2: "Bonus FreeSpin & Buyspin"
+    };
+
+    function getTodayDate() {
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const d = new Date();
+        return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    function handleExcel(input, id) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const json = XLSX.utils.sheet_to_json(worksheet);
+
+            if (json.length === 0) {
+                alert("File kosong!");
+                return;
+            }
+
+            let totalUser = 0;
+            let totalNominal = 0;
+
+            const firstRow = json[0];
+            let colUser = "";
+            let colKoin = "";
+
+            for (let key in firstRow) {
+                const k = key.toLowerCase();
+                if (k.includes("userid") || k.includes("user id") || k.includes("username")) colUser = key;
+                if (id === 1) {
+                    if (k.includes("total koin") || k.includes("koin") || k.includes("nominal")) colKoin = key;
+                } else {
+                    if (k.includes("hadiah") || k.includes("total hadiah") || k.includes("bonus")) colKoin = key;
+                }
+            }
+
+            if (!colUser || !colKoin) {
+                alert(`Kolom tidak ditemukan!\nCari: User ID & ${id === 1 ? 'Total Koin' : 'Total Hadiah'}`);
+                return;
+            }
+
+            json.forEach(row => {
+                if (row[colUser]) totalUser++;
+                if (row[colKoin]) {
+                    let valRaw = String(row[colKoin]).replace(/[^0-9.,]/g, "");
+                    valRaw = valRaw.replace(/,/g, ".");
+                    let valNum = parseFloat(valRaw) || 0;
+                    totalNominal += Math.ceil(valNum);
+                }
+            });
+
+            document.getElementById('total' + id).value = totalUser;
+            const formattedNominal = String(totalNominal).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            document.getElementById('nominal' + id).value = formattedNominal;
+
+            updateUI(id);
+            alert(`SISTEM: Data ${id === 1 ? 'Mahjong' : 'FreeSpin'} Berhasil Diproses!`);
+            input.value = ""; 
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    function formatCurrency(el, id) {
+        let val = el.value.replace(/\D/g, "");
+        if (val !== "") {
+            el.value = val.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        } else {
+            el.value = "";
+        }
+        updateUI(id);
+    }
+
+    function updateUI(id) {
+        const date = getTodayDate();
+        const total = document.getElementById('total' + id).value || '0';
+        const nominal = document.getElementById('nominal' + id).value || '0';
+        
+        const folderText = `${titles[id]}_ ${date}`;
+        document.getElementById('folderName' + id).innerText = folderText;
+
+        let reportText = "";
+        if(id === 1) {
+            reportText = `Bonus scatter mahjong ways 1 & 2\nTotal All : ${total}\nNominal  : Rp. ${nominal}\n\nKet : Dilakukan Manual Deposit yang dimana Member mendapatkan Bonus scatter.`;
+        } else {
+            reportText = `Bonus FreeSpin & Buyspin\nTotal All : ${total}\nNominal  : Rp. ${nominal}\n\nKet :di lakukan manual deposit yang dimana member yang di atas mendapatkan bonus freespin/buyspin ya ko/ci.`;
+        }
+        document.getElementById('preview' + id).innerText = reportText;
+    }
+
+    function copyText(elementId) {
+        const text = document.getElementById(elementId).innerText;
+        const el = document.createElement('textarea');
+        el.value = text;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        showToast("DATA BERHASIL DISALIN!");
+    }
+
+    function resetAllData() {
+        if (confirm("Reset seluruh sistem reportan?")) {
+            document.getElementById('total1').value = "";
+            document.getElementById('nominal1').value = "";
+            document.getElementById('total2').value = "";
+            document.getElementById('nominal2').value = "";
+            document.getElementById('excelInput1').value = "";
+            document.getElementById('excelInput2').value = "";
+            updateUI(1);
+            updateUI(2);
+            showToast("SISTEM TELAH DIRESET!");
+        }
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.innerText = message;
+        toast.style.display = "block";
+        setTimeout(() => { toast.style.display = "none"; }, 1500);
+    }
+
+    updateUI(1);
+    updateUI(2);
+</script>
+
+</body>
+</html>
